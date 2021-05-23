@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+  <file source-language="en-US" datatype="plaintext" original="ng2.template">
+    <body>
+      <trans-unit id="3990673556241951497" datatype="html">
+        <source>RTGS for SAR</source>
+        <target>RTGS for SAR</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app.component.html</context>
+          <context context-type="linenumber">6</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="2454050363478003966" datatype="html">
+        <source>Login</source>
+        <target>Login</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/auth/login/login.component.html</context>
+          <context context-type="linenumber">2</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/auth/login/login.component.html</context>
+          <context context-type="linenumber">8</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="1431416938026210429" datatype="html">
+        <source>Password</source>
+        <target>Password</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/auth/login/login.component.html</context>
+          <context context-type="linenumber">14</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="1908285951500318953" datatype="html">
+        <source> Login </source>
+        <target>Login</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/auth/login/login.component.html</context>
+          <context context-type="linenumber">21,22</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/layout/admin_layouts/admin/admin.component.html</context>
+          <context context-type="linenumber">56</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="460768807323872129" datatype="html">
+        <source>Create new user</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/layout/admin_layouts/add-user/add-user.component.html</context>
+          <context context-type="linenumber">3</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="5312727456282218392" datatype="html">
+        <source>User name</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/layout/admin_layouts/add-user/add-user.component.html</context>
+          <context context-type="linenumber">8</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/layout/admin_layouts/edit-user/edit-user.component.html</context>
+          <context context-type="linenumber">8</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="8959351223959030937" datatype="html">
+        <source>User login</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/layout/admin_layouts/add-user/add-user.component.html</context>
+          <context context-type="linenumber">13</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="2772023564304193657" datatype="html">
+        <source>Enter your password</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/layout/admin_layouts/add-user/add-user.component.html</context>
+          <context context-type="linenumber">18</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/layout/admin_layouts/edit-user/edit-user.component.html</context>
+          <context context-type="linenumber">13</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="4145496584631696119" datatype="html">
+        <source>Role</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/layout/admin_layouts/add-user/add-user.component.html</context>
+          <context context-type="linenumber">26</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/layout/admin_layouts/edit-user/edit-user.component.html</context>
+          <context context-type="linenumber">21</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="2149300564474427551" datatype="html">
+        <source>Administrator</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/layout/admin_layouts/add-user/add-user.component.html</context>
+          <context context-type="linenumber">28</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/layout/admin_layouts/edit-user/edit-user.component.html</context>
+          <context context-type="linenumber">23</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="1179184907489210406" datatype="html">
+        <source>Operator</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/layout/admin_layouts/add-user/add-user.component.html</context>
+          <context context-type="linenumber">29</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/layout/admin_layouts/edit-user/edit-user.component.html</context>
+          <context context-type="linenumber">24</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="4136129438009397007" datatype="html">
+        <source>Invalid</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/layout/admin_layouts/add-user/add-user.component.html</context>
+          <context context-type="linenumber">30</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/layout/admin_layouts/edit-user/edit-user.component.html</context>
+          <context context-type="linenumber">25</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="7941428823403788384" datatype="html">
+        <source> Create </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/layout/admin_layouts/add-user/add-user.component.html</context>
+          <context context-type="linenumber">40,41</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="6610290202346500590" datatype="html">
+        <source>Administration panel</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/layout/admin_layouts/admin/admin.component.html</context>
+          <context context-type="linenumber">6</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="1810017607161915196" datatype="html">
+        <source>logout</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/layout/admin_layouts/admin/admin.component.html</context>
+          <context context-type="linenumber">9</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="1200537683924336947" datatype="html">
+        <source> Bank name: <x id="INTERPOLATION" equiv-text="{{currentBank.bankName}}"/> </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/layout/admin_layouts/admin/admin.component.html</context>
+          <context context-type="linenumber">15,17</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="3688122137733948937" datatype="html">
+        <source> User name: <x id="INTERPOLATION" equiv-text="{{currentUser.ename}}"/> </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/layout/admin_layouts/admin/admin.component.html</context>
+          <context context-type="linenumber">18,20</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="5550364455652687409" datatype="html">
+        <source><x id="START_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;mat-icon color=&quot;accent&quot;&gt;"/>person_add<x id="CLOSE_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;/mat-icon&gt;"/> Add user </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/layout/admin_layouts/admin/admin.component.html</context>
+          <context context-type="linenumber">34,36</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="6091155300753951309" datatype="html">
+        <source> Num. </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/layout/admin_layouts/admin/admin.component.html</context>
+          <context context-type="linenumber">46</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="8778616811237742446" datatype="html">
+        <source> Name </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/layout/admin_layouts/admin/admin.component.html</context>
+          <context context-type="linenumber">51</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="6587107798974923353" datatype="html">
+        <source> Roles </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/layout/admin_layouts/admin/admin.component.html</context>
+          <context context-type="linenumber">61</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="2743943053526185567" datatype="html">
+        <source> Created Date </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/layout/admin_layouts/admin/admin.component.html</context>
+          <context context-type="linenumber">66</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="1857481439031093618" datatype="html">
+        <source> Delete user </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/layout/admin_layouts/admin/admin.component.html</context>
+          <context context-type="linenumber">71</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="2719466379171723218" datatype="html">
+        <source> Edit user </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/layout/admin_layouts/admin/admin.component.html</context>
+          <context context-type="linenumber">80</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="1920621552746684683" datatype="html">
+        <source>Edit user profile with login: <x id="INTERPOLATION" equiv-text="{{data.user.login}}"/></source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/layout/admin_layouts/edit-user/edit-user.component.html</context>
+          <context context-type="linenumber">3</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="2330577642930707695" datatype="html">
+        <source> Cancel </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/layout/admin_layouts/edit-user/edit-user.component.html</context>
+          <context context-type="linenumber">32,33</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="2592690450389009216" datatype="html">
+        <source> Update </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/layout/admin_layouts/edit-user/edit-user.component.html</context>
+          <context context-type="linenumber">35,36</context>
+        </context-group>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

@@ -1,0 +1,16 @@
+th.mat-sort-header-sorted {
+  color: black;
+}
+.table-container {
+  position: relative;
+  max-height: 65vh;
+  overflow: auto;
+}
+
+tr.mat-row:hover {
+  cursor: pointer;
+  background-color: whitesmoke;
+}
+//Это шапка таблицы
+::ng-deep .mat-sort-header-container {
+ }

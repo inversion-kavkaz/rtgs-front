@@ -1,5 +1,4 @@
-import { Component } from '@angular/core';
-
+import { Component, LOCALE_ID, Inject } from '@angular/core';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -7,4 +6,12 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'rtgs-front';
+
+  languageList = [
+    { code: 'en', label: 'English' },
+    { code: 'ru', label: 'Русский' }
+  ];
+
+  constructor(@Inject(LOCALE_ID) protected localeId: string) { }
+
 }
