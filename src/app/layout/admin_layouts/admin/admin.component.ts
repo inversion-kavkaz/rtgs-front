@@ -78,15 +78,17 @@ export class AdminComponent implements OnInit {
   }
 
   editClick(userId: any) {
-    console.log('edit id:' + userId)
     const dialogUserEditConfig = new MatDialogConfig();
     dialogUserEditConfig.width = '600px';
     const currentUser = this.bankUsers.find(u => u.id == userId)
-    console.log('currentUser = ' + currentUser)
     dialogUserEditConfig.data = {
       user: currentUser
     };
-    this.dialog.open(EditUserComponent, dialogUserEditConfig);
+    this.dialog.open(EditUserComponent, dialogUserEditConfig).afterClosed()
+      .subscribe( result => {
+        if(result.res != 0)
+          this.loadAllUser()
+      });
   }
 
   addUser() {

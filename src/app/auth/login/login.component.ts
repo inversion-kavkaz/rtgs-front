@@ -13,6 +13,8 @@ import {AuthService} from "../../service/auth.service";
 export class LoginComponent implements OnInit {
 
   public loginForm: FormGroup;
+  public loginError = ""
+  hide: boolean = true;
 
   constructor(private authService: AuthService,
               private tokenStorage: TokenStorageService,
@@ -40,7 +42,6 @@ export class LoginComponent implements OnInit {
       login: this.loginForm.value.login,
       password: this.loginForm.value.password
     }).subscribe(data => {
-      console.log(data);
 
       this.tokenStorage.saveToken(data.token);
       this.tokenStorage.saveUser(data);
@@ -52,10 +53,10 @@ export class LoginComponent implements OnInit {
         this.router.navigate(['/client']);
 //      window.location.reload();
     }, error => {
-      if(error.error)
-        this.notificationService.showSnackBar(JSON.stringify(error.error));
-      else
-        this.notificationService.showSnackBar(error.message);
+      if(error.error.login === 'Invalid Username'){
+        this.loginError = "Invalid login data"
+        this.loginForm.reset()
+      }
     });
   }
 

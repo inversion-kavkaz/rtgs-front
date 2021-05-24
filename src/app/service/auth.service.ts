@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs";
+import {map} from "rxjs/operators";
 
 const AUTH_API = 'http://localhost:5000/api/auth/';
 
@@ -16,7 +17,7 @@ export class AuthService {
     return this.http.post(AUTH_API + 'signin', {
       login: user.login,
       password: user.password
-    });
+    })
   }
 
   public register(user: any): Observable<any> {

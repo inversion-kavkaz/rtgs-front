@@ -1,14 +1,14 @@
+body{
+  background-color: antiquewhite;
+}
+
 .login-page {
   text-align: center;
-  margin-top: 10rem;
+  margin: auto;
+  width: 30%;
 }
 
-#controls {
-  display: block;
-  margin: 0 auto;
-  width: 40%;
-}
 
 mat-form-field {
-  width: 50%;
+  width: 100%;
 }

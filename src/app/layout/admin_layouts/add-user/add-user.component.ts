@@ -51,12 +51,9 @@ export class AddUserComponent implements OnInit {
       login:    this.profileEditForm.value.login,
       password: this.profileEditForm.value.password
     }
-    console.log(newUser)
     this.authService.register(newUser).subscribe(data => {
-      console.log(data)
       this.closeDialog(1)
       }, error => {
-      console.log(error)
     }
     )
   }

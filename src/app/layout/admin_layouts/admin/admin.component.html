@@ -12,24 +12,40 @@
 
   </mat-card-header>
 
-    <mat-card-subtitle i18n>
-        Bank name: {{currentBank.bankName}}
-    </mat-card-subtitle>
-    <mat-card-subtitle i18n>
-        User name: {{currentUser.ename}}
-    </mat-card-subtitle>
+  <div class="container-fluid">
+      <div class="row">
+        <div class="col">
+          <mat-card-subtitle style="font-weight: bold;margin: 0;">Bank name:</mat-card-subtitle>
+        </div>
+        <div class="col-11">
+          <mat-card-subtitle style="margin: 0;">{{currentBank.bankName}}, {{currentBank.bankAdress}}</mat-card-subtitle>
+        </div>
+      </div>
 
-  <mat-grid-list cols="2" rowHeight="10:1" style="border-bottom: 1px darkcyan solid; border-top: 1px darkcyan solid">
+    <div class="row">
+      <div class="col">
+        <mat-card-subtitle style="font-weight: bold;margin: 0;">User name:</mat-card-subtitle>
+      </div>
+      <div class="col-11">
+        <mat-card-subtitle style="margin: 0;">{{currentUser.ename}}</mat-card-subtitle>
+      </div>
+    </div>
+  </div>
+
+<!--    <mat-card-subtitle i18n style="font-weight: bold">-->
+<!--        User name: {{currentUser.ename}}-->
+<!--    </mat-card-subtitle>-->
+
+  <mat-grid-list cols="4" rowHeight="10:1" style="border-bottom: 1px darkcyan solid;margin-top: 1em">
   <mat-grid-tile >
-    <mat-form-field >
+    <mat-form-field style=" width: 80%">
       <input matInput (keyup)="applyFilter($event)" placeholder="Search">
     </mat-form-field>
   </mat-grid-tile>
-  <mat-grid-tile>
-    <mat-card-subtitle style="padding-right: 5em;
-                            display: flex;
-                            flex-direction: row;
-                            justify-content: right;">
+  <mat-grid-tile></mat-grid-tile>
+  <mat-grid-tile></mat-grid-tile>
+  <mat-grid-tile >
+    <mat-card-subtitle style="margin-top: 1em">
       <button i18n matTooltip="Add person" mat-icon-button (click)="addUser()">
         <mat-icon color="accent">person_add</mat-icon>
         Add user

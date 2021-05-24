@@ -14,6 +14,7 @@ export class EditUserComponent implements OnInit {
 
   public profileEditForm: FormGroup;
   hide = true;
+  selected: any;
 
   constructor(private dialogRef: MatDialogRef<EditUserComponent>,
               private fb: FormBuilder,
@@ -30,15 +31,28 @@ export class EditUserComponent implements OnInit {
     return this.fb.group({
       ename: [this.data.user.ename ,Validators.compose([Validators.required])],
       password: [null],
-      roles: [this.data.user.roles, Validators.compose([Validators.required])]
+      roles: [this.data.user.roles[0], Validators.compose([Validators.required])]
     });
   }
 
-  closeDialog() {
-    this.dialogRef.close()
+  closeDialog(result: number) {
+    this.dialogRef.close({res: result})
   }
 
   submit() {
+    const updatedUser  = {
+      id : this.data.user.id,
+      bank_id : this.data.user.bank_id,
+      EName : this.profileEditForm.value.ename,
+      roles : [this.profileEditForm.value.roles],
+      password : this.profileEditForm.value.password
+    }
+    this.userService.updateUser(updatedUser).subscribe( data => {
+      this.closeDialog(1)
+      this.notificationService.showSnackBar("Edit user success")
+    }, error => {
+      this.notificationService.showSnackBar(error.message)
+    })
 
   }
 }
