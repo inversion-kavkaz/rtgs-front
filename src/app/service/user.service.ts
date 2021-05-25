@@ -2,7 +2,6 @@ import {Injectable} from '@angular/core';
 import {Observable} from "rxjs";
 import {HttpClient} from "@angular/common/http";
 import {TokenStorageService} from "./token-storage.service";
-import {User} from "../model/user";
 
 const USER_DELETE = 'http://localhost:5000/user/delete';
 const USER_GETALL = 'http://localhost:5000/user/all';

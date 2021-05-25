@@ -1,1 +1,170 @@
-<p>client works!</p>
+<mat-card *ngIf="currentTransactions">
+  <mat-card-header style="display: flex;
+                          padding-right: 5em;
+                          flex-direction: row;
+                          justify-content: space-between;">
+
+    <button matTooltip="Profile" mat-icon-button  (click)="logout()">
+      <mat-icon color="accent" >logout</mat-icon>
+      logout
+    </button>
+
+  </mat-card-header>
+
+
+  <mat-grid-list cols="12" rowHeight="10:5" style="border-bottom: 1px darkcyan solid;margin-top: 1em">
+    <mat-grid-tile [colspan]="4">
+      <mat-form-field style=" width: 80%">
+        <input matInput (keyup)="applyFilter($event)" placeholder="Search">
+      </mat-form-field>
+    </mat-grid-tile>
+    <mat-grid-tile></mat-grid-tile>
+    <mat-grid-tile></mat-grid-tile>
+    <mat-grid-tile></mat-grid-tile>
+    <!--delete button-->
+    <mat-grid-tile>
+      <mat-card-subtitle style="margin-top: 1em">
+        <button mat-stroked-button (click)="addTransaction()">
+          Delete
+          <mat-icon color="accent">delete</mat-icon>
+        </button>
+      </mat-card-subtitle>
+    </mat-grid-tile>
+    <!--edit button-->
+    <mat-grid-tile>
+      <mat-card-subtitle style="margin-top: 1em">
+        <button mat-stroked-button (click)="addTransaction()">
+          Edit
+          <mat-icon color="accent">edit</mat-icon>
+        </button>
+      </mat-card-subtitle>
+    </mat-grid-tile>
+
+    <!--    update button-->
+    <mat-grid-tile>
+      <mat-card-subtitle style="margin-top: 1em">
+        <button mat-stroked-button (click)="addTransaction()">
+          Update
+          <mat-icon color="accent">update</mat-icon>
+        </button>
+      </mat-card-subtitle>
+    </mat-grid-tile>
+    <!--    Clone button-->
+    <mat-grid-tile>
+      <mat-card-subtitle style="margin-top: 1em">
+        <button mat-stroked-button (click)="addTransaction()">
+          Clone
+          <mat-icon color="accent">content_copy</mat-icon>
+        </button>
+      </mat-card-subtitle>
+    </mat-grid-tile>
+
+    <!--    Create button-->
+    <mat-grid-tile >
+      <mat-card-subtitle style="margin-top: 1em">
+        <button mat-stroked-button (click)="addTransaction()">
+          Create
+          <mat-icon color="accent">note_add</mat-icon>
+        </button>
+      </mat-card-subtitle>
+    </mat-grid-tile>
+
+  </mat-grid-list>
+
+  <mat-card-content >
+    <div class="table-container">
+      <table mat-table [dataSource]="dataSource" matSort  class="mat-elevation-z8" style="width: 100%">
+
+        <ng-container matColumnDef="select" sticky>
+          <th mat-header-cell *matHeaderCellDef>
+            <mat-checkbox (change)="$event ? masterToggle() : null"
+                          [checked]="selection.hasValue() && isAllSelected()"
+                          [indeterminate]="selection.hasValue() && !isAllSelected()"
+                          [aria-label]="checkboxLabel()">
+            </mat-checkbox>
+          </th>
+          <td mat-cell *matCellDef="let row">
+            <mat-checkbox (click)="$event.stopPropagation()"
+                          (change)="$event ? selection.toggle(row) : null"
+                          [checked]="selection.isSelected(row)"
+                          [aria-label]="checkboxLabel(row)">
+            </mat-checkbox>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="position">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Num. </th>
+          <td mat-cell *matCellDef="let element; let i = index">{{i + 1}}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="edNo">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header > Doc. num </th>
+          <td mat-cell *matCellDef="let element"> {{element.edNo}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="edDate">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header > Date </th>
+          <td mat-cell *matCellDef="let element"> {{element.edDate | date: 'yyyy-MM-dd HH:mm:ss'}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="payeePersonalAcc">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header > Payee Acc </th>
+          <td mat-cell *matCellDef="let element"> {{element.payeePersonalAcc}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="payerPersonalAcc">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header > Payer Acc </th>
+          <td mat-cell *matCellDef="let element"> {{element.payerPersonalAcc }} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="sum">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header > Sum </th>
+          <td mat-cell *matCellDef="let element"> {{element.sum }} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="currency">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header > Currency </th>
+          <td mat-cell *matCellDef="let element"> {{element.currency }} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="payeeINN">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header > Payer INN </th>
+          <td mat-cell *matCellDef="let element"> {{element.payeeINN }} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="payeeName">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header > Payee name </th>
+          <td mat-cell *matCellDef="let element"> {{element.payeeName }} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="payerINN">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header > Payer INN </th>
+          <td mat-cell *matCellDef="let element"> {{element.payerINN }} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="payerName">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header > Payer name </th>
+          <td mat-cell *matCellDef="let element"> {{element.payerName }} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="purpose">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header > Purpose </th>
+          <td mat-cell *matCellDef="let element"> {{element.purpose }} </td>
+        </ng-container>
+
+<!--        <ng-container matColumnDef="edit">-->
+<!--          <th mat-header-cell *matHeaderCellDef > Edit transation </th>-->
+<!--          <td mat-cell *matCellDef="let element">-->
+<!--            <button matTooltip="edit user" mat-icon-button (click)="editClick(element.id)">-->
+<!--              <mat-icon color="accent">edit</mat-icon>-->
+<!--            </button>-->
+<!--          </td>-->
+<!--        </ng-container>-->
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true" ></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;" (click)="clickTrnRow(row)"></tr>
+      </table>
+    </div>
+  </mat-card-content>
+</mat-card>
+

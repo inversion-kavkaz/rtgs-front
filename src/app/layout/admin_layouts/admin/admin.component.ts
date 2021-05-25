@@ -25,10 +25,10 @@ export class AdminComponent implements OnInit {
   displayedColumns: string[] = ['position', 'ename', 'login', 'roles', 'createdDate','delete', 'edit']
   dataSource: MatTableDataSource<User>  = new MatTableDataSource()
 
-  @ViewChild(MatSort) sort: MatSort = new MatSort();
+//  @ViewChild(MatSort) sort: MatSort
 
   ngAfterViewInit() {
-    this.dataSource.sort = this.sort;
+//    this.dataSource.sort = this.sort;
   }
 
   constructor(private tokenStorage: TokenStorageService,
@@ -40,6 +40,7 @@ export class AdminComponent implements OnInit {
   ) {
     this.currentBank = this.tokenStorage.getUser().bank
     this.currentUser = this.tokenStorage.getUser().user
+
     this.loadAllUser()
   }
 

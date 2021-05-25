@@ -16,6 +16,7 @@ import {MatGridListModule} from "@angular/material/grid-list";
 import {EditUserComponent} from './layout/admin_layouts/edit-user/edit-user.component';
 import {MatSelectModule} from "@angular/material/select";
 import {AddUserComponent} from './layout/admin_layouts/add-user/add-user.component';
+import {MatCheckboxModule} from "@angular/material/checkbox";
 
 @NgModule({
   declarations: [
@@ -35,6 +36,7 @@ import {AddUserComponent} from './layout/admin_layouts/add-user/add-user.compone
     HttpClientModule,
     MatGridListModule,
     MatSelectModule,
+    MatCheckboxModule,
   ],
   providers: [authInterceptorProviders, authErrorInterceptorProviders],
   bootstrap: [AppComponent]
