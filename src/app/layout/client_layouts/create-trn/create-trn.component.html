@@ -1,52 +1,145 @@
-<form [formGroup]="trnCreatedForm">
-<!--<mat-card class="mat-elevation-z3">-->
-  <mat-grid-list cols="2">
+<form [formGroup]="trnCreatedForm" style="padding: 0 0.3em 0 0.3em">
+  <mat-grid-list cols="2" rowHeight="10:8" >
     <mat-grid-tile colspan="2" rowspan="1">
-      <mat-grid-tile-header> Transaction info </mat-grid-tile-header>
-      <div class="w-100 h-100" style="margin-top: 7em">
-        <mat-grid-list cols="2">
-          <mat-grid-list>
+      <mat-grid-tile-header> Create transaction : {{today}}</mat-grid-tile-header>
+      <div class="w-100 h-100" style="margin: 8em 0 0 2em">
+        <mat-grid-list cols="2" rowHeight="10:2">
 
-            <mat-form-field> <!--Дата документа-->
-              <mat-label>Document number</mat-label>
-              <input matInput [matDatepicker]="picker1" [formControlName]="trnCreatedForm.value.edDate">
-              <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
-              <mat-datepicker #picker1></mat-datepicker>
-            </mat-form-field>
+          <mat-grid-tile >
+            <div class="w-100 h-100">
+              <mat-form-field> <!--Дата документа-->
+                <mat-label>Document date</mat-label>
+                <input matInput   [matDatepicker]="picker" FormControlName="edDate">
+                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-datepicker #picker></mat-datepicker>
+              </mat-form-field>
+            </div>
 
-            <mat-form-field> <!--Номер документа-->
-              <mat-label>Document number</mat-label>
-              <input matInput type="number" [(ngModel)]="trnCreatedForm.value.edNo" formControlName="edNo">
-              <button mat-button *ngIf="trnCreatedForm.value.edNo" matSuffix mat-icon-button aria-label="Clear" (click)="trnCreatedForm.value.edNo=''">
-                <mat-icon>close</mat-icon>
-              </button>
-            </mat-form-field>
+          </mat-grid-tile>
+          <mat-grid-tile>
+            <div class="w-100 h-100">
+              <mat-form-field > <!--Номер документа-->
+                <mat-label>Document number</mat-label>
+                <input matInput type="number" formControlName="edNo" >
+              </mat-form-field>
+            </div>
+          </mat-grid-tile>
 
+          <mat-grid-tile>
+            <div class="w-100 h-100">
+              <mat-form-field > <!--Сумма документа-->
+                <mat-label>Document sum</mat-label>
+                <input matInput type="number" formControlName="sum" class="right w-75" >
+                <span matPrefix>$&nbsp;</span>
+                <span matSuffix>
+                  <mat-form-field style="width: 5em;height: 2em;margin-left: -3em;">
+                    <mat-label >Currency</mat-label>
+                    <mat-select formControlName="currency" >
+                      <mat-option value="SYP">SYP</mat-option>
+                      <mat-option value="USD">USD</mat-option>
+                      <mat-option value="RUR">RUR</mat-option>
+                    </mat-select>
+                </mat-form-field>
+                </span>
+<!--                <input  currencyMask matInput formControlName="sum">-->
+              </mat-form-field>
+            </div>
+          </mat-grid-tile>
 
+          <mat-grid-tile>
+            <div class="w-100 h-100">
+              <mat-form-field> <!--Валюта документа-->
+                <mat-label>Document type</mat-label>
+                <input matInput type="text" formControlName="transKind">
+              </mat-form-field>
+            </div>
+          </mat-grid-tile>
 
-          </mat-grid-list>
+          <mat-grid-tile [colspan]="2" class="border-bottom" >
+            <div class="w-100 h-100" >
+              <mat-form-field style="width:100%"> <!--назначение-->
+                <mat-label>Document purpose</mat-label>
+              <textarea matInput formControlName="purpose" style="resize: none"></textarea>
+              </mat-form-field>
+            </div>
+          </mat-grid-tile>
         </mat-grid-list>
-
-
-
       </div>
     </mat-grid-tile>
 
-    <mat-grid-tile colspan="1" rowspan="1">
+    <mat-grid-tile >
       <mat-grid-tile-header> Payer info </mat-grid-tile-header>
-      2 </mat-grid-tile>
+      <div class="w-100 h-100" style="margin: 8em 0 0 2em">
+        <mat-grid-list cols="1" rowHeight="10:2">
+
+          <!--Счет плательщика-->
+          <mat-grid-tile>
+            <div class="w-100 h-100">
+              <mat-form-field >
+                <mat-label>Payer personal acc</mat-label>
+                <input matInput type="number" formControlName="payerPersonalAcc" >
+              </mat-form-field>
+            </div>
+          </mat-grid-tile>
+
+          <!--наименование плательщика-->
+          <mat-grid-tile class="border-bottom" >
+            <div class="w-100">
+              <mat-form-field style="width:100%">
+                <mat-label>Payer name</mat-label>
+                <textarea matInput formControlName="payerName" style="resize: none;"></textarea>
+              </mat-form-field>
+            </div>
+          </mat-grid-tile>
+        </mat-grid-list>
+      </div>
+
+    </mat-grid-tile>
 
     <mat-grid-tile colspan="1" rowspan="1">
       <mat-grid-tile-header> Payee info </mat-grid-tile-header>
-      3 </mat-grid-tile>
+      <div class="w-100 h-100" style="margin: 8em 0 0 2em">
+        <mat-grid-list cols="1" rowHeight="10:2">
+
+          <!--Кор. счет получателя-->
+          <mat-grid-tile>
+            <div class="w-100 h-100">
+              <mat-form-field >
+                <mat-label>Payee cor acc</mat-label>
+                <input matInput type="number" formControlName="payeeCorrespAcc" >
+              </mat-form-field>
+            </div>
+          </mat-grid-tile>
+
+          <!--Счет получателя-->
+          <mat-grid-tile>
+            <div class="w-100 h-100">
+              <mat-form-field >
+                <mat-label>Payee personal acc</mat-label>
+                <input matInput type="number" formControlName="payeePersonalAcc" >
+              </mat-form-field>
+            </div>
+          </mat-grid-tile>
+
+          <!--наименование получателя-->
+          <mat-grid-tile class="border-bottom" >
+            <div class="w-100">
+              <mat-form-field style="width:100%">
+                <mat-label>Payee name</mat-label>
+                <textarea matInput formControlName="payeeName" style="resize: none;"></textarea>
+              </mat-form-field>
+            </div>
+          </mat-grid-tile>
+        </mat-grid-list>
+      </div>    </mat-grid-tile>
+
   </mat-grid-list>
-  <mat-card-footer>
+  <mat-card-footer class="border-top">
     <div class="row">
-      <button  color="primary" class="w-25" [disabled]="trnCreatedForm.invalid" (click)="submit()" mat-button disableRipple> Create </button>
-      <button  color="primary" class="w-25" [disabled]="trnCreatedForm.invalid" (click)="submit()" mat-button disableRipple> Create and resume </button>
-      <button  color="primary" class="w-25" [disabled]="trnCreatedForm.invalid" (click)="submit()" mat-button disableRipple> Create and clone </button>
+      <button  color="primary" class="w-25" [disabled]="trnCreatedForm.invalid" (click)="submit(1)" mat-button disableRipple> Create </button>
+      <button  color="primary" class="w-25" [disabled]="trnCreatedForm.invalid" (click)="submit(2)" mat-button disableRipple> Create and resume </button>
+      <button  color="primary" class="w-25" [disabled]="trnCreatedForm.invalid" (click)="submit(3)" mat-button disableRipple> Create and clone </button>
       <button (click)="closeDialog(0)" class="w-25" mat-button mat-dialog-close disableRipple> Cancel </button>
     </div>
   </mat-card-footer>
-<!--</mat-card>-->
 </form>

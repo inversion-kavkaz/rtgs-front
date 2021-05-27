@@ -21,6 +21,7 @@ import { ViewTrnComponent } from './layout/client_layouts/view-trn/view-trn.comp
 import { CreateTrnComponent } from './layout/client_layouts/create-trn/create-trn.component';
 import {MatDatepickerModule} from "@angular/material/datepicker";
 import {MatNativeDateModule} from "@angular/material/core";
+import {NgxCurrencyModule} from "ngx-currency";
 
 @NgModule({
   declarations: [
@@ -44,7 +45,8 @@ import {MatNativeDateModule} from "@angular/material/core";
     MatSelectModule,
     MatCheckboxModule,
     MatDatepickerModule,
-    MatNativeDateModule
+    MatNativeDateModule,
+    NgxCurrencyModule
   ],
   providers: [authInterceptorProviders, authErrorInterceptorProviders, MatNativeDateModule, MatNativeDateModule ],
   bootstrap: [AppComponent]

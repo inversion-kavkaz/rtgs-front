@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {TokenStorageService} from "../../../service/token-storage.service";
 import {NotificationService} from "../../../service/notification.service";
 import {Router} from "@angular/router";
@@ -9,8 +9,6 @@ import {User} from "../../../model/user";
 import {Trn} from "../../../model/trn";
 import {MatTableDataSource} from "@angular/material/table";
 import {SelectionModel} from "@angular/cdk/collections";
-import {MatSort} from "@angular/material/sort";
-import {EditUserComponent} from "../../admin_layouts/edit-user/edit-user.component";
 import {ViewTrnComponent} from "../view-trn/view-trn.component";
 import {CreateTrnComponent} from "../create-trn/create-trn.component";
 import {AuthService} from "../../../service/auth.service";
@@ -25,11 +23,12 @@ export class ClientComponent implements OnInit {
   currentBank: Bank
   currentUser: User
   currentTransactions: Trn[] = []
+  deleteList: number[] = []
 
-  displayedColumns: string[] = ['select','position', 'edNo','edDate', 'payeePersonalAcc'
-    , 'payerPersonalAcc', 'sum','currency','payeeINN', 'payeeName','payerINN', 'payerName'
-    ,'purpose']
-  dataSource: MatTableDataSource<Trn>  = new MatTableDataSource()
+  displayedColumns: string[] = ['select', 'position', 'edNo', 'edDate', 'payeePersonalAcc'
+    , 'payerPersonalAcc', 'sum', 'currency', 'payeeINN', 'payeeName', 'payerINN', 'payerName'
+    , 'purpose']
+  dataSource: MatTableDataSource<Trn> = new MatTableDataSource()
   selection = new SelectionModel<Trn>(true, []);
 
   constructor(
@@ -74,12 +73,18 @@ export class ClientComponent implements OnInit {
 
   addTransaction() {
     const createDialogTransaction = new MatDialogConfig();
-    createDialogTransaction.width = '80%';
-    createDialogTransaction.height = '90%';
+    createDialogTransaction.width = '50em';
+    createDialogTransaction.maxWidth = '50em';
+    createDialogTransaction.minWidth = '50em';
+
+    createDialogTransaction.height = '45em';
+    createDialogTransaction.maxHeight = '45em';
+    createDialogTransaction.minHeight = '45em';
+
+    createDialogTransaction.data = this.dataSource
     this.dialog.open(CreateTrnComponent, createDialogTransaction).afterClosed()
-      .subscribe( result => {
-        // if(result != undefined && result.res != 0)
-        //   this.currentTransactions.includes(new Trn(),1)
+      .subscribe(result => {
+          this.dataSource._updateChangeSubscription()
       });
 
   }
@@ -97,12 +102,11 @@ export class ClientComponent implements OnInit {
       trn: currentTrn
     };
     this.dialog.open(ViewTrnComponent, viewDialogTransaction).afterClosed()
-      .subscribe( result => {
-        if(result != undefined && result.res != 0)
+      .subscribe(result => {
+        if (result != undefined && result.res != 0)
           this.loadTrans(new Date())
       });
   }
-
 
   isAllSelected() {
     const numSelected = this.selection.selected.length;
@@ -125,4 +129,32 @@ export class ClientComponent implements OnInit {
     return `${this.selection.isSelected(row) ? 'deselect' : 'select'} row ${row.position + 1}`;
   }
 
+  deleteTransaction() {
+
+    if(this.selection.selected.length < 1) {
+      this.notificationService.showSnackBar("You mast checked transactions")
+      return
+    }
+    this.selection.selected.filter(t => t.status === 0).forEach(trn => {
+        this.deleteList.push(trn.id)
+    })
+    this.trnService.deleteTrn({idList : this.deleteList}).subscribe( result => {
+
+      this.selection.selected.filter(t => t.status === 0).forEach(trn => {
+        this.dataSource.data.splice(this.dataSource.data.findIndex(t => t.id === trn.id),1)
+      })
+      this.dataSource._updateChangeSubscription()
+      this.notificationService.showSnackBar("Success deleted " + this.selection.selected.length + ' transactions')
+
+    }, error => {
+      this.notificationService.showSnackBar("delete Error " + error.message)
+    }, () => {
+      this.clearSelected()
+    })
+  }
+
+  clearSelected(){
+    this.selection.clear()
+    this.deleteList.splice(0,this.deleteList.length)
+  }
 }

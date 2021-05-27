@@ -11,20 +11,18 @@
 
   </mat-card-header>
 
-  <mat-grid-list cols="16" rowHeight="50" style="border-bottom: 1px darkcyan solid;margin-top: 1em;border-top: 1px darkcyan solid">
+  <mat-grid-list cols="18" rowHeight="50" style="border-bottom: 1px darkcyan solid;margin-top: 1em;border-top: 1px darkcyan solid">
     <mat-grid-tile [colspan]="3" >
       <mat-form-field style=" width: 80%">
         <input matInput (keyup)="applyFilter($event)" placeholder="Search">
       </mat-form-field>
     </mat-grid-tile>
     <mat-grid-tile [colspan]="3" class="w-100" ></mat-grid-tile>
-    <mat-grid-tile [colspan]="9" class="w-100" >
-      <mat-card-subtitle style="margin-top: 1em" >
+    <mat-grid-tile [colspan]="8" class="w-100" >
         <button mat-stroked-button style="margin-left: 0.5em" (click)="addTransaction()">Create<mat-icon color="accent">note_add</mat-icon></button>
         <button mat-stroked-button style="margin-left: 0.5em" (click)="addTransaction()">Clone<mat-icon color="accent">content_copy</mat-icon></button>
         <button mat-stroked-button style="margin-left: 0.5em" (click)="addTransaction()">Edit<mat-icon color="accent">edit</mat-icon></button>
-        <button mat-stroked-button style="margin-left: 0.5em" (click)="addTransaction()">Delete<mat-icon color="accent">delete</mat-icon></button>
-      </mat-card-subtitle>
+        <button mat-stroked-button style="margin-left: 0.5em" (click)="deleteTransaction()">Delete<mat-icon color="accent">delete</mat-icon></button>
     </mat-grid-tile>
   </mat-grid-list>
 

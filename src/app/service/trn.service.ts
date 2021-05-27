@@ -40,12 +40,12 @@ export class TrnService {
     })
   }
 
-  createTrn(trn: Trn) : Observable<any>{
+  createTrn(trn: any) : Observable<any>{
     return this.http.post(TRN_URL_CREATE,trn)
   }
 
-  deleteTrn(id: number): Observable<any> {
-    return this.http.delete(TRN_URL_DELETE + '/' + id)
+  deleteTrn(delListid: any): Observable<any> {
+    return this.http.post(TRN_URL_DELETE,delListid)
   }
 
   updateTrn(trn: Trn): Observable<any>{

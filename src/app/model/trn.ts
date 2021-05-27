@@ -19,5 +19,5 @@ export interface Trn {
   payerName: string
   payeeName: string
   currency : string
-
+  status : number
 }
