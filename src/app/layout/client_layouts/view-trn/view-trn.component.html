@@ -1,0 +1,75 @@
+<h2 mat-dialog-title>Transaction information</h2>
+<mat-dialog-content class="mat-typography">
+
+      <mat-grid-list cols="6" rowHeight="30" >
+
+<!--        Общая информация о платеже-->
+
+        <mat-grid-tile [colspan]="2" class="border-bottom" ><div class="w-100">Transaction id:</div></mat-grid-tile>
+        <mat-grid-tile [colspan]="4" class="border-bottom" ><div class="w-100" >{{data.trn.id}}</div></mat-grid-tile>
+
+        <mat-grid-tile [colspan]="2" class="border-bottom" ><div class="w-100">Doc number:</div></mat-grid-tile>
+        <mat-grid-tile [colspan]="4" class="border-bottom" ><div class="w-100" >{{data.trn.edNo}}</div></mat-grid-tile>
+
+        <mat-grid-tile [colspan]="2" class="border-bottom" ><div class="w-100">Transaction date:</div></mat-grid-tile>
+        <mat-grid-tile [colspan]="4" class="border-bottom" ><div class="w-100" >{{data.trn.edDate}}</div></mat-grid-tile>
+
+        <mat-grid-tile [colspan]="2" class="border-bottom" ><div class="w-100">Transaction Kind:</div></mat-grid-tile>
+        <mat-grid-tile [colspan]="4" class="border-bottom" ><div class="w-100" >{{data.trn.transKind}}</div></mat-grid-tile>
+
+        <mat-grid-tile [colspan]="2" class="border-bottom" ><div class="w-100">Transaction priority:</div></mat-grid-tile>
+        <mat-grid-tile [colspan]="4" class="border-bottom" ><div class="w-100" >{{data.trn.priority}}</div></mat-grid-tile>
+
+        <mat-grid-tile [colspan]="2" class="border-bottom" ><div class="w-100">Transaction sum:</div></mat-grid-tile>
+        <mat-grid-tile [colspan]="4" class="border-bottom" ><div class="w-100" >{{data.trn.sum}}</div></mat-grid-tile>
+
+        <mat-grid-tile [colspan]="2" class="border-bottom" ><div class="w-100">Transaction currency:</div></mat-grid-tile>
+        <mat-grid-tile [colspan]="4" class="border-bottom" ><div class="w-100" >{{data.trn.currency}}</div></mat-grid-tile>
+
+        <mat-grid-tile [colspan]="2" class="border-bottom" ><div class="w-100">Transaction status:</div></mat-grid-tile>
+        <mat-grid-tile [colspan]="4" class="border-bottom" ><div class="w-100" >{{data.trn.status}}</div></mat-grid-tile>
+
+        <mat-grid-tile [colspan]="2" [rowspan]="2" class="border-bottom" >
+          <div class="w-100">Transaction purpose:</div></mat-grid-tile>
+        <mat-grid-tile [colspan]="4" [rowspan]="2" class="border-bottom" >
+          <div class="w-100 h-100" >
+            <textarea style="width: 100%; height: 100%;border: none;" disabled="true">{{data.trn.purpose}}</textarea>
+        </div>
+        </mat-grid-tile>
+
+<!--      Информация о плательщике        -->
+      <mat-grid-tile [colspan]="6" class="border-bottom" ><div style="font-weight: bold">Payer information</div></mat-grid-tile>
+
+      <mat-grid-tile [colspan]="2" class="border-bottom" ><div class="w-100">Transaction payer name:</div></mat-grid-tile>
+      <mat-grid-tile [colspan]="4" class="border-bottom" ><div class="w-100" >{{data.trn.payerName}}</div></mat-grid-tile>
+
+      <mat-grid-tile [colspan]="2" class="border-bottom" ><div class="w-100">Transaction payer personal acc:</div></mat-grid-tile>
+      <mat-grid-tile [colspan]="4" class="border-bottom" ><div class="w-100" >{{data.trn.payerPersonalAcc}}</div></mat-grid-tile>
+
+      <mat-grid-tile [colspan]="2" class="border-bottom" ><div class="w-100">Transaction payer INN:</div></mat-grid-tile>
+      <mat-grid-tile [colspan]="4" class="border-bottom" ><div class="w-100" >{{data.trn.payerINN}}</div></mat-grid-tile>
+
+      <mat-grid-tile [colspan]="2" class="border-bottom" ><div class="w-100">Transaction payer corresp acc:</div></mat-grid-tile>
+      <mat-grid-tile [colspan]="4" class="border-bottom" ><div class="w-100" >{{data.trn.payerCorrespAcc}}</div></mat-grid-tile>
+
+        <!--      Информация о получателе        -->
+
+      <mat-grid-tile [colspan]="6" class="border-bottom" ><div style="font-weight: bold">Payee information</div></mat-grid-tile>
+
+      <mat-grid-tile [colspan]="2" class="border-bottom" ><div class="w-100">Transaction payee name:</div></mat-grid-tile>
+      <mat-grid-tile [colspan]="4" class="border-bottom" ><div class="w-100" >{{data.trn.payeeName}}</div></mat-grid-tile>
+
+      <mat-grid-tile [colspan]="2" class="border-bottom" ><div class="w-100">Transaction payee personal acc:</div></mat-grid-tile>
+      <mat-grid-tile [colspan]="4" class="border-bottom" ><div class="w-100" >{{data.trn.payeePersonalAcc}}</div></mat-grid-tile>
+
+      <mat-grid-tile [colspan]="2" class="border-bottom" ><div class="w-100">Transaction payee INN:</div></mat-grid-tile>
+      <mat-grid-tile [colspan]="4" class="border-bottom" ><div class="w-100" >{{data.trn.payeeINN}}</div></mat-grid-tile>
+
+      <mat-grid-tile [colspan]="2" class="border-bottom" ><div class="w-100">Transaction payee corresp acc:</div></mat-grid-tile>
+      <mat-grid-tile [colspan]="4" class="border-bottom" ><div class="w-100" >{{data.trn.payeeCorrespAcc}}</div></mat-grid-tile>
+
+      <mat-grid-tile [colspan]="2" class="border-bottom" ><div class="w-100">Transaction payee bank:</div></mat-grid-tile>
+      <mat-grid-tile [colspan]="4" class="border-bottom" ><div class="w-100" >{{data.trn.edReceiver}}</div></mat-grid-tile>
+    </mat-grid-list>
+
+</mat-dialog-content>

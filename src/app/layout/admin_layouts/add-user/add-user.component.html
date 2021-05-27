@@ -1,21 +1,21 @@
 <mat-card>
   <mat-card-title>
-    <h2 i18n>Create new user</h2>
+    <h2 >Create new user</h2>
   </mat-card-title>
   <form [formGroup]="profileEditForm">
 
     <mat-form-field class="w-100" appearance="outline">
-      <mat-label i18n>User name</mat-label>
+      <mat-label >User name</mat-label>
       <input matInput formControlName="ename">
     </mat-form-field>
 
     <mat-form-field class="w-100" appearance="outline">
-      <mat-label i18n>User login</mat-label>
+      <mat-label >User login</mat-label>
       <input matInput formControlName="login">
     </mat-form-field>
 
     <mat-form-field appearance="fill">
-      <mat-label i18n>Enter your password</mat-label>
+      <mat-label >Enter your password</mat-label>
       <input matInput formControlName="password" [type]="hide ? 'password' : 'text'">
       <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
         <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
@@ -23,11 +23,11 @@
     </mat-form-field>
 
     <mat-form-field class="w-100" appearance="outline">
-      <mat-label i18n>Role</mat-label>
-      <mat-select formControlName="roles">
-        <mat-option value="ROLE_ADMIN" i18n>Administrator</mat-option>
-        <mat-option value="ROLE_USER" i18n>Operator</mat-option>
-        <mat-option value="ROLE_TEST" i18n>Invalid</mat-option>
+      <mat-label >Role</mat-label>
+      <mat-select formControlName="roles" >
+        <mat-option *ngFor="let role of roles" [value]="role">
+          {{role}}
+        </mat-option>
       </mat-select>
     </mat-form-field>
 
@@ -36,7 +36,7 @@
               mat-button mat-dialog-close disableRipple>
         Cancel
       </button>
-      <button i18n color="primary" class="w-50" [disabled]="profileEditForm.invalid" (click)="submit()" mat-button disableRipple>
+      <button  color="primary" class="w-50" [disabled]="profileEditForm.invalid" (click)="submit()" mat-button disableRipple>
         Create
       </button>
     </div>

@@ -20,9 +20,9 @@
     <mat-form-field class="w-100" appearance="outline">
       <mat-label i18n>Role</mat-label>
       <mat-select formControlName="roles" [(value)]="selected">
-        <mat-option value="ROLE_ADMIN" i18n>Administrator</mat-option>
-        <mat-option value="ROLE_USER" i18n>Operator</mat-option>
-        <mat-option value="ROLE_TEST" i18n>Invalid</mat-option>
+        <mat-option *ngFor="let role of roles" [value]="role">
+          {{role}}
+        </mat-option>
       </mat-select>
     </mat-form-field>
 

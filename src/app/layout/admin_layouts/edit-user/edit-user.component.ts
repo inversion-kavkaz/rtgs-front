@@ -15,6 +15,7 @@ export class EditUserComponent implements OnInit {
   public profileEditForm: FormGroup;
   hide = true;
   selected: any;
+  roles = []
 
   constructor(private dialogRef: MatDialogRef<EditUserComponent>,
               private fb: FormBuilder,
@@ -22,6 +23,7 @@ export class EditUserComponent implements OnInit {
               @Inject(MAT_DIALOG_DATA) public data: any,
               private userService: UserService) {
     this.profileEditForm = this.createProfileForm()
+    this.roles = userService.roles
   }
 
   ngOnInit(): void {

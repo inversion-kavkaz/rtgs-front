@@ -17,6 +17,10 @@ import {EditUserComponent} from './layout/admin_layouts/edit-user/edit-user.comp
 import {MatSelectModule} from "@angular/material/select";
 import {AddUserComponent} from './layout/admin_layouts/add-user/add-user.component';
 import {MatCheckboxModule} from "@angular/material/checkbox";
+import { ViewTrnComponent } from './layout/client_layouts/view-trn/view-trn.component';
+import { CreateTrnComponent } from './layout/client_layouts/create-trn/create-trn.component';
+import {MatDatepickerModule} from "@angular/material/datepicker";
+import {MatNativeDateModule} from "@angular/material/core";
 
 @NgModule({
   declarations: [
@@ -25,7 +29,9 @@ import {MatCheckboxModule} from "@angular/material/checkbox";
     AdminComponent,
     ClientComponent,
     EditUserComponent,
-    AddUserComponent
+    AddUserComponent,
+    ViewTrnComponent,
+    CreateTrnComponent
   ],
   imports: [
     BrowserModule,
@@ -37,8 +43,10 @@ import {MatCheckboxModule} from "@angular/material/checkbox";
     MatGridListModule,
     MatSelectModule,
     MatCheckboxModule,
+    MatDatepickerModule,
+    MatNativeDateModule
   ],
-  providers: [authInterceptorProviders, authErrorInterceptorProviders],
+  providers: [authInterceptorProviders, authErrorInterceptorProviders, MatNativeDateModule, MatNativeDateModule ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

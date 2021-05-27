@@ -44,7 +44,10 @@ export class LoginComponent implements OnInit {
     }).subscribe(data => {
 
       this.tokenStorage.saveToken(data.token);
-      this.tokenStorage.saveUser(data);
+      this.tokenStorage.saveUser(data.user);
+      this.tokenStorage.saveBank(data.bank);
+
+
 
       this.notificationService.showSnackBar('Successfully logged in');
       if(data.user.roles[0] === 'ROLE_ADMIN')

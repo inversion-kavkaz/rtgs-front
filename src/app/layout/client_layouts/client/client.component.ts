@@ -2,7 +2,7 @@ import {Component, OnInit, ViewChild} from '@angular/core';
 import {TokenStorageService} from "../../../service/token-storage.service";
 import {NotificationService} from "../../../service/notification.service";
 import {Router} from "@angular/router";
-import {MatDialog} from "@angular/material/dialog";
+import {MatDialog, MatDialogConfig} from "@angular/material/dialog";
 import {TrnService} from "../../../service/trn.service";
 import {Bank} from "../../../model/bank";
 import {User} from "../../../model/user";
@@ -10,6 +10,10 @@ import {Trn} from "../../../model/trn";
 import {MatTableDataSource} from "@angular/material/table";
 import {SelectionModel} from "@angular/cdk/collections";
 import {MatSort} from "@angular/material/sort";
+import {EditUserComponent} from "../../admin_layouts/edit-user/edit-user.component";
+import {ViewTrnComponent} from "../view-trn/view-trn.component";
+import {CreateTrnComponent} from "../create-trn/create-trn.component";
+import {AuthService} from "../../../service/auth.service";
 
 @Component({
   selector: 'app-client',
@@ -29,14 +33,19 @@ export class ClientComponent implements OnInit {
   selection = new SelectionModel<Trn>(true, []);
 
   constructor(
+    private authService: AuthService,
     private tokenStorage: TokenStorageService,
     private notificationService: NotificationService,
     private router: Router,
     private trnService: TrnService,
     private dialog: MatDialog
   ) {
-    this.currentBank = this.tokenStorage.getUser().bank
-    this.currentUser = this.tokenStorage.getUser().user
+    this.currentBank = this.tokenStorage.getBank()
+    this.currentUser = this.tokenStorage.getUser()
+
+    console.log('this.currentBank' + this.currentBank)
+    console.log('this.currentUser' + this.currentUser)
+
     this.loadTrans(new Date())
   }
 
@@ -55,7 +64,7 @@ export class ClientComponent implements OnInit {
   }
 
   logout() {
-
+    this.tokenStorage.logOut()
   }
 
   applyFilter(event: Event) {
@@ -64,6 +73,14 @@ export class ClientComponent implements OnInit {
   }
 
   addTransaction() {
+    const createDialogTransaction = new MatDialogConfig();
+    createDialogTransaction.width = '80%';
+    createDialogTransaction.height = '90%';
+    this.dialog.open(CreateTrnComponent, createDialogTransaction).afterClosed()
+      .subscribe( result => {
+        // if(result != undefined && result.res != 0)
+        //   this.currentTransactions.includes(new Trn(),1)
+      });
 
   }
 
@@ -71,11 +88,21 @@ export class ClientComponent implements OnInit {
 
   }
 
-  clickTrnRow(row: any) {
-
-    console.log(row)
-
+  clickTrnRow(row: Trn) {
+    const viewDialogTransaction = new MatDialogConfig();
+    viewDialogTransaction.width = '80%';
+    viewDialogTransaction.height = '80%';
+    const currentTrn = this.currentTransactions.find(u => u.id == row.id)
+    viewDialogTransaction.data = {
+      trn: currentTrn
+    };
+    this.dialog.open(ViewTrnComponent, viewDialogTransaction).afterClosed()
+      .subscribe( result => {
+        if(result != undefined && result.res != 0)
+          this.loadTrans(new Date())
+      });
   }
+
 
   isAllSelected() {
     const numSelected = this.selection.selected.length;

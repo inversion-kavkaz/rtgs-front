@@ -1,0 +1,52 @@
+<form [formGroup]="trnCreatedForm">
+<!--<mat-card class="mat-elevation-z3">-->
+  <mat-grid-list cols="2">
+    <mat-grid-tile colspan="2" rowspan="1">
+      <mat-grid-tile-header> Transaction info </mat-grid-tile-header>
+      <div class="w-100 h-100" style="margin-top: 7em">
+        <mat-grid-list cols="2">
+          <mat-grid-list>
+
+            <mat-form-field> <!--Дата документа-->
+              <mat-label>Document number</mat-label>
+              <input matInput [matDatepicker]="picker1" [formControlName]="trnCreatedForm.value.edDate">
+              <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+              <mat-datepicker #picker1></mat-datepicker>
+            </mat-form-field>
+
+            <mat-form-field> <!--Номер документа-->
+              <mat-label>Document number</mat-label>
+              <input matInput type="number" [(ngModel)]="trnCreatedForm.value.edNo" formControlName="edNo">
+              <button mat-button *ngIf="trnCreatedForm.value.edNo" matSuffix mat-icon-button aria-label="Clear" (click)="trnCreatedForm.value.edNo=''">
+                <mat-icon>close</mat-icon>
+              </button>
+            </mat-form-field>
+
+
+
+          </mat-grid-list>
+        </mat-grid-list>
+
+
+
+      </div>
+    </mat-grid-tile>
+
+    <mat-grid-tile colspan="1" rowspan="1">
+      <mat-grid-tile-header> Payer info </mat-grid-tile-header>
+      2 </mat-grid-tile>
+
+    <mat-grid-tile colspan="1" rowspan="1">
+      <mat-grid-tile-header> Payee info </mat-grid-tile-header>
+      3 </mat-grid-tile>
+  </mat-grid-list>
+  <mat-card-footer>
+    <div class="row">
+      <button  color="primary" class="w-25" [disabled]="trnCreatedForm.invalid" (click)="submit()" mat-button disableRipple> Create </button>
+      <button  color="primary" class="w-25" [disabled]="trnCreatedForm.invalid" (click)="submit()" mat-button disableRipple> Create and resume </button>
+      <button  color="primary" class="w-25" [disabled]="trnCreatedForm.invalid" (click)="submit()" mat-button disableRipple> Create and clone </button>
+      <button (click)="closeDialog(0)" class="w-25" mat-button mat-dialog-close disableRipple> Cancel </button>
+    </div>
+  </mat-card-footer>
+<!--</mat-card>-->
+</form>

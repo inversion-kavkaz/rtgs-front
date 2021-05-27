@@ -16,6 +16,7 @@ export class AddUserComponent implements OnInit {
   public profileEditForm: FormGroup;
   hide = true;
   bankId: number
+  roles = []
 
   constructor(private dialogRef: MatDialogRef<EditUserComponent>,
               private fb: FormBuilder,
@@ -24,7 +25,8 @@ export class AddUserComponent implements OnInit {
               private authService: AuthService,
               private tokenStorage: TokenStorageService) {
     this.profileEditForm = this.createProfileForm()
-    this.bankId = this.tokenStorage.getUser().bank.id
+    this.bankId = this.tokenStorage.getBank().id
+    this.roles = userService.roles
   }
 
   ngOnInit(): void {
@@ -49,7 +51,8 @@ export class AddUserComponent implements OnInit {
       bank_id:  this.bankId,
       eName:    this.profileEditForm.value.ename,
       login:    this.profileEditForm.value.login,
-      password: this.profileEditForm.value.password
+      password: this.profileEditForm.value.password,
+      roles : [this.profileEditForm.value.roles]
     }
     this.authService.register(newUser).subscribe(data => {
       this.closeDialog(1)

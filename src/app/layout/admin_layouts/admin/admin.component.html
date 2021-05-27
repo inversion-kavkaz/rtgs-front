@@ -12,29 +12,24 @@
 
   </mat-card-header>
 
-  <div class="container-fluid">
-      <div class="row">
-        <div class="col">
-          <mat-card-subtitle style="font-weight: bold;margin: 0;">Bank name:</mat-card-subtitle>
-        </div>
-        <div class="col-11">
-          <mat-card-subtitle style="margin: 0;">{{currentBank.bankName}}, {{currentBank.bankAdress}}</mat-card-subtitle>
-        </div>
-      </div>
+  <mat-grid-list cols="20" rowHeight="50" >
+    <mat-grid-tile [colspan] ="2">
+      <mat-card-subtitle class="w-100" style="font-weight: bold;margin: 0;">Bank name:</mat-card-subtitle>
+    </mat-grid-tile>
+    <mat-grid-tile [colspan] ="18">
+      <mat-card-subtitle class="w-100" style="margin: 0;">{{currentBank.bankName}}, {{currentBank.bankAdress}}</mat-card-subtitle>
+    </mat-grid-tile>
+  </mat-grid-list>
 
-    <div class="row">
-      <div class="col">
-        <mat-card-subtitle style="font-weight: bold;margin: 0;">User name:</mat-card-subtitle>
-      </div>
-      <div class="col-11">
-        <mat-card-subtitle style="margin: 0;">{{currentUser.ename}}</mat-card-subtitle>
-      </div>
-    </div>
-  </div>
+  <mat-grid-list cols="20" rowHeight="10:2" >
+    <mat-grid-tile [colspan] ="2">
+      <mat-card-subtitle class="w-100" style="font-weight: bold;margin: 0;">User name:</mat-card-subtitle>
+    </mat-grid-tile>
+    <mat-grid-tile [colspan] ="18">
+      <mat-card-subtitle class="w-100" style="margin: 0;">{{currentUser.ename}}</mat-card-subtitle>
+    </mat-grid-tile>
+  </mat-grid-list>
 
-<!--    <mat-card-subtitle i18n style="font-weight: bold">-->
-<!--        User name: {{currentUser.ename}}-->
-<!--    </mat-card-subtitle>-->
 
   <mat-grid-list cols="4" rowHeight="10:1" style="border-bottom: 1px darkcyan solid;margin-top: 1em">
   <mat-grid-tile >

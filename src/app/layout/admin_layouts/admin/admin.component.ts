@@ -10,6 +10,7 @@ import {MatTableDataSource} from '@angular/material/table';
 import {MatDialog, MatDialogConfig} from "@angular/material/dialog";
 import {EditUserComponent} from "../edit-user/edit-user.component";
 import {AddUserComponent} from "../add-user/add-user.component";
+import {AuthService} from "../../../service/auth.service";
 
 @Component({
   selector: 'app-admin',
@@ -31,17 +32,18 @@ export class AdminComponent implements OnInit {
 //    this.dataSource.sort = this.sort;
   }
 
-  constructor(private tokenStorage: TokenStorageService,
+  constructor(private authService: AuthService,
               private notificationService: NotificationService,
               private router: Router,
               private userService: UserService,
               private dialog: MatDialog,
-
+              private tokenStorage: TokenStorageService,
   ) {
-    this.currentBank = this.tokenStorage.getUser().bank
-    this.currentUser = this.tokenStorage.getUser().user
+    this.currentBank = this.tokenStorage.getBank()
+    this.currentUser = this.tokenStorage.getUser()
 
     this.loadAllUser()
+
   }
 
   loadAllUser(){
@@ -80,24 +82,24 @@ export class AdminComponent implements OnInit {
 
   editClick(userId: any) {
     const dialogUserEditConfig = new MatDialogConfig();
-    dialogUserEditConfig.width = '600px';
+    dialogUserEditConfig.width = '50%';
     const currentUser = this.bankUsers.find(u => u.id == userId)
     dialogUserEditConfig.data = {
       user: currentUser
     };
     this.dialog.open(EditUserComponent, dialogUserEditConfig).afterClosed()
       .subscribe( result => {
-        if(result.res != 0)
+        if(result != undefined && result.res != 0)
           this.loadAllUser()
       });
   }
 
   addUser() {
     const AddDialogUserEditConfig = new MatDialogConfig();
-    AddDialogUserEditConfig.width = '600px';
+    AddDialogUserEditConfig.width = '50%';
     this.dialog.open(AddUserComponent, AddDialogUserEditConfig).afterClosed()
       .subscribe(result => {
-        if (result.res != 0)
+        if(result != undefined && result.res != 0)
           this.loadAllUser()
       });
   }

@@ -4,6 +4,7 @@ import {HttpClient} from "@angular/common/http";
 import {Trn} from "../model/trn";
 import {TokenStorageService} from "./token-storage.service";
 import {formatDate} from '@angular/common';
+import {AuthService} from "./auth.service";
 
 
 const TRN_URL_ALL = 'http://localhost:5000/api/trn/getAll'
@@ -23,16 +24,15 @@ export class TrnService {
 
   constructor(private http: HttpClient,
               private tokenService: TokenStorageService,
-              @Inject(LOCALE_ID) private locale: string
+              @Inject(LOCALE_ID) private locale: string,
+              private authService: AuthService
   ) {
-    this.currentUserId = tokenService.getUser().user.id
+    this.currentUserId = tokenService.getUser().id
   }
 
   getTranByDate(date: Date): Observable<any>{
     let reqDate  = formatDate(date,DATE_FORMAT,this.locale);
 
-    console.log(date)
-    console.log(reqDate)
     return this.http.post(TRN_URL_ALL,
       {
       date : reqDate,
