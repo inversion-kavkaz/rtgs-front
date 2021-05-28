@@ -97,7 +97,7 @@ export class ClientComponent implements OnInit {
     const viewDialogTransaction = new MatDialogConfig();
     viewDialogTransaction.width = '80%';
     viewDialogTransaction.height = '80%';
-    const currentTrn = this.currentTransactions.find(u => u.id == row.id)
+    const currentTrn = this.currentTransactions.find(u => u.itrnnum == row.itrnnum)
     viewDialogTransaction.data = {
       trn: currentTrn
     };
@@ -135,13 +135,17 @@ export class ClientComponent implements OnInit {
       this.notificationService.showSnackBar("You mast checked transactions")
       return
     }
-    this.selection.selected.filter(t => t.status === 0).forEach(trn => {
-        this.deleteList.push(trn.id)
+    this.selection.selected.filter(t => t.status === 1).forEach(trn => {
+        this.deleteList.push(trn.itrnnum)
     })
+
+    console.log(this.selection.selected)
+    console.log(this.deleteList)
+
     this.trnService.deleteTrn({idList : this.deleteList}).subscribe( result => {
 
-      this.selection.selected.filter(t => t.status === 0).forEach(trn => {
-        this.dataSource.data.splice(this.dataSource.data.findIndex(t => t.id === trn.id),1)
+      this.deleteList.forEach(trn => {
+        this.dataSource.data.splice(this.dataSource.data.findIndex(t => t.itrnnum === trn),1)
       })
       this.dataSource._updateChangeSubscription()
       this.notificationService.showSnackBar("Success deleted " + this.selection.selected.length + ' transactions')

@@ -20,14 +20,14 @@ const DATE_FORMAT = 'yyyy-MM-dd';
 })
 export class TrnService {
 
-  currentUserId: number
+  currentLogin: string
 
   constructor(private http: HttpClient,
               private tokenService: TokenStorageService,
               @Inject(LOCALE_ID) private locale: string,
               private authService: AuthService
   ) {
-    this.currentUserId = tokenService.getUser().id
+    this.currentLogin = tokenService.getUser().login
   }
 
   getTranByDate(date: Date): Observable<any>{
@@ -36,7 +36,7 @@ export class TrnService {
     return this.http.post(TRN_URL_ALL,
       {
       date : reqDate,
-      user_id : this.currentUserId
+      login : this.currentLogin
     })
   }
 

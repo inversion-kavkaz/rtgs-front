@@ -1,6 +1,7 @@
 export interface Trn {
   position: number
-  id: number
+  itrnnum: number
+  itrnanum: number
   edNo: number
   edAuthor: string
   edReceiver: string

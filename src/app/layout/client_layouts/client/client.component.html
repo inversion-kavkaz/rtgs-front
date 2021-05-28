@@ -59,7 +59,7 @@
 
         <ng-container matColumnDef="edDate">
           <th mat-header-cell *matHeaderCellDef mat-sort-header > Date </th>
-          <td mat-cell *matCellDef="let element"> {{element.edDate | date: 'yyyy-MM-dd HH:mm:ss'}} </td>
+          <td mat-cell *matCellDef="let element"> {{element.edDate | date: 'dd-MM-yyyy'}} </td>
         </ng-container>
 
         <ng-container matColumnDef="payeePersonalAcc">
@@ -98,7 +98,7 @@
         </ng-container>
 
         <ng-container matColumnDef="payerName">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header style="white-space: normal; word-wrap: break-word; max-width: 30vh;"> Payer name </th>
+          <th mat-header-cell *matHeaderCellDef mat-sort-header style="white-space: normal; word-wrap: break-word; max-width: 20vh;"> Payer name </th>
           <td mat-cell *matCellDef="let element"> {{element.payerName }} </td>
         </ng-container>
 

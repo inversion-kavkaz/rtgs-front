@@ -20,7 +20,8 @@ export class CreateTrnComponent implements OnInit {
   trnCreatedForm: FormGroup
   currentUser: User
   currentBank: Bank
-  today  = new Date().toDateString()
+  today  = new Date().toISOString().substr(0,10)
+  date = new FormControl(new Date());
 
   constructor(private dialogRef: MatDialogRef<EditUserComponent>,
               private fb: FormBuilder,
@@ -32,15 +33,13 @@ export class CreateTrnComponent implements OnInit {
     this.currentBank = tokenStorageService.getBank()
     this.currentUser = tokenStorageService.getUser()
     this.trnCreatedForm = this.createProfileForm()
-    console.log(this.data.data)
+    console.log(this.today)
 
   }
 
   createProfileForm(): FormGroup {
     return this.fb.group({
       edNo: [null],
-      edDate: [(new Date()).toISOString().substr(0,10)],
-
       edReceiver: ["258746985"],
 
       transKind: [1],
@@ -54,7 +53,7 @@ export class CreateTrnComponent implements OnInit {
       payerINN: [""],
       payerName: [""],
 
-      payeeCorrespAcc: ["", Validators.compose([Validators.required])],
+      payeeCorrespAcc: [null, Validators.compose([Validators.required])],
       payeePersonalAcc: ["", Validators.compose([Validators.required])],
       payeeINN: [""],
       payeeName: [""],
@@ -72,21 +71,26 @@ export class CreateTrnComponent implements OnInit {
     const newTrn = {
       edNo: this.trnCreatedForm.value.edNo,
       edAuthor: this.trnCreatedForm.value.edAuthor,
+      edDate : this.date.value,
       edReceiver: this.trnCreatedForm.value.edReceiver,
       transKind: this.trnCreatedForm.value.transKind,
       sum: this.trnCreatedForm.value.sum,
       payerPersonalAcc: this.trnCreatedForm.value.payerPersonalAcc,
-      payerCorrespAcc: this.trnCreatedForm.value.payerCorrespAcc,
+      payerCorrespAcc: this.currentBank.corrAcc,
       payeePersonalAcc: this.trnCreatedForm.value.payeePersonalAcc,
       payeeCorrespAcc: this.trnCreatedForm.value.payeeCorrespAcc,
-      userId: this.currentUser.id,
+      login: this.currentUser.login,
       purpose: this.trnCreatedForm.value.purpose,
       payerName: this.trnCreatedForm.value.payerName,
       payeeName: this.trnCreatedForm.value.payeeName,
       currency : this.trnCreatedForm.value.currency
     }
 
+    console.log(newTrn)
+
+
     this.trnService.createTrn(newTrn).subscribe( result => {
+      console.log(result)
       this.data.data.push(result)
       if(actionType === 1)
         this.closeDialog(1)
