@@ -5,6 +5,8 @@ import {Trn} from "../model/trn";
 import {TokenStorageService} from "./token-storage.service";
 import {formatDate} from '@angular/common';
 import {AuthService} from "./auth.service";
+// @ts-ignore
+import {TrnResponse} from "../model/trnResponse";
 
 
 const TRN_URL_ALL = 'http://localhost:5000/api/trn/getAll'
@@ -40,15 +42,15 @@ export class TrnService {
     })
   }
 
-  createTrn(trn: any) : Observable<any>{
-    return this.http.post(TRN_URL_CREATE,trn)
+  createTrn(trn: any) : Observable<TrnResponse>{
+    return this.http.post<TrnResponse>(TRN_URL_CREATE,trn)
   }
 
   deleteTrn(delListid: any): Observable<any> {
     return this.http.post(TRN_URL_DELETE,delListid)
   }
 
-  updateTrn(trn: Trn): Observable<any>{
+  updateTrn(trn: any): Observable<any>{
     return this.http.post(TRN_URL_UPDATE,trn)
   }
 }

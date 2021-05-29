@@ -1,7 +1,7 @@
-<form [formGroup]="trnCreatedForm" style="padding: 0 0.3em 0 0.3em">
+<form [formGroup]="trnCreatedForm" style="padding: 0 0.3em 0 0.3em;" (click)="trnResult = 'undefined'">
   <mat-grid-list cols="2" rowHeight="10:8" >
     <mat-grid-tile colspan="2" rowspan="1">
-      <mat-grid-tile-header> Create transaction : {{today}}</mat-grid-tile-header>
+      <mat-grid-tile-header> Create transaction </mat-grid-tile-header>
       <div class="w-100 h-100" style="margin: 8em 0 0 2em">
         <mat-grid-list cols="2" rowHeight="10:2">
 
@@ -72,6 +72,16 @@
       <div class="w-100 h-100" style="margin: 8em 0 0 2em">
         <mat-grid-list cols="1" rowHeight="10:2">
 
+          <!--Кор. счет плательщика-->
+          <mat-grid-tile>
+            <div class="w-100 h-100">
+              <mat-form-field >
+                <mat-label>Payer cor acc</mat-label>
+                <input matInput type="text" formControlName="payerCorrespAcc" [readonly]="true">
+              </mat-form-field>
+            </div>
+          </mat-grid-tile>
+
           <!--Счет плательщика-->
           <mat-grid-tile>
             <div class="w-100 h-100">
@@ -106,8 +116,11 @@
             <div class="w-100 h-100">
               <mat-form-field >
                 <mat-label>Payee cor acc</mat-label>
-                <input matInput type="text" formControlName="payeeCorrespAcc" >
+                <input matInput type="text" formControlName="payeeCorrespAcc"  [value]="trnCreatedForm.value.payeeCorrespAcc">
               </mat-form-field>
+              <button mat-mini-fab (click)="openBanksGuide()" [disabled]="!isBankLoaded">
+                <mat-icon >account_balance</mat-icon>
+              </button>
             </div>
           </mat-grid-tile>
 
@@ -136,10 +149,21 @@
   </mat-grid-list>
   <mat-card-footer class="border-top">
     <div class="row">
-      <button  color="primary" class="w-25" [disabled]="trnCreatedForm.invalid" (click)="submit(1)" mat-button disableRipple> Create </button>
-      <button  color="primary" class="w-25" [disabled]="trnCreatedForm.invalid" (click)="submit(2)" mat-button disableRipple> Create and resume </button>
-      <button  color="primary" class="w-25" [disabled]="trnCreatedForm.invalid" (click)="submit(3)" mat-button disableRipple> Create and clone </button>
+      <button  color="primary" class="w-25" [disabled]="trnCreatedForm.invalid" (click)="submit(1)" mat-button disableRipple> {{actionType}} </button>
+      <button  color="primary" class="w-25" [disabled]="trnCreatedForm.invalid" (click)="submit(2)" mat-button disableRipple> {{actionType}} and resume </button>
+      <button  color="primary" class="w-25" [disabled]="trnCreatedForm.invalid" (click)="submit(3)" mat-button disableRipple> {{actionType}} and clone </button>
       <button (click)="closeDialog(0)" class="w-25" mat-button mat-dialog-close disableRipple> Cancel </button>
     </div>
   </mat-card-footer>
 </form>
+<mat-card-footer *ngIf="trnResult != 'undefined'" style="margin: 2em 0 2em 1em">
+  <mat-grid-list cols="10">
+    <mat-grid-tile>
+      <mat-icon *ngIf="trnResult === 'success'" style="color: darkgreen">done_outline</mat-icon>
+      <mat-icon *ngIf="trnResult != 'success'"style="color: darkred">cancel</mat-icon>
+    </mat-grid-tile>
+    <mat-grid-tile colspan="9">
+      <textarea class="w-100" style="border: none"> {{trnResultText}}</textarea>
+    </mat-grid-tile>
+  </mat-grid-list>
+</mat-card-footer>

@@ -22,6 +22,7 @@ import { CreateTrnComponent } from './layout/client_layouts/create-trn/create-tr
 import {MatDatepickerModule} from "@angular/material/datepicker";
 import {MatNativeDateModule} from "@angular/material/core";
 import {NgxCurrencyModule} from "ngx-currency";
+import { BankHandbookComponent } from './layout/client_layouts/handbooks/bank-handbook/bank-handbook.component';
 
 @NgModule({
   declarations: [
@@ -32,7 +33,8 @@ import {NgxCurrencyModule} from "ngx-currency";
     EditUserComponent,
     AddUserComponent,
     ViewTrnComponent,
-    CreateTrnComponent
+    CreateTrnComponent,
+    BankHandbookComponent
   ],
   imports: [
     BrowserModule,

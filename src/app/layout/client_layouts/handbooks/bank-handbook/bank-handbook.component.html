@@ -1,0 +1,39 @@
+<mat-card *ngIf="bankList.length > 0 else load">
+<mat-card-title >
+  <h3>Bank handbook</h3>
+  <input matInput (keyup)="applyFilter($event)" placeholder="Search">
+</mat-card-title>
+  <mat-card-content >
+    <div class="table-container">
+      <table mat-table [dataSource]="dataSource" matSort (matSortChange)="sortChanged($event)" class="mat-elevation-z8" style="width: 100%" >
+
+
+        <ng-container matColumnDef="position">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Num. </th>
+          <td mat-cell *matCellDef="let element; let i = index">{{i + 1}}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="corrAcc">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header > corrAcc </th>
+          <td mat-cell *matCellDef="let element"> {{element.corrAcc}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="bankName">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header > bankName </th>
+          <td mat-cell *matCellDef="let element" > {{element.bankName }} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="bankAdress">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header > bankAdress </th>
+          <td mat-cell *matCellDef="let element" > {{element.bankAdress}} </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true" ></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;" (click)="clickRow(row)"></tr>
+      </table>
+    </div>
+  </mat-card-content>
+</mat-card>
+
+<ng-template #load> Banks handbook not loading please try again</ng-template>
+

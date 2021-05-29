@@ -12,6 +12,7 @@ import {SelectionModel} from "@angular/cdk/collections";
 import {ViewTrnComponent} from "../view-trn/view-trn.component";
 import {CreateTrnComponent} from "../create-trn/create-trn.component";
 import {AuthService} from "../../../service/auth.service";
+import {Sort} from "@angular/material/sort";
 
 @Component({
   selector: 'app-client',
@@ -24,8 +25,9 @@ export class ClientComponent implements OnInit {
   currentUser: User
   currentTransactions: Trn[] = []
   deleteList: number[] = []
+  buttonVisible: boolean = false
 
-  displayedColumns: string[] = ['select', 'position', 'edNo', 'edDate', 'payeePersonalAcc'
+  displayedColumns: string[] = ['select', 'status','position', 'edNo', 'edDate', 'payeePersonalAcc'
     , 'payerPersonalAcc', 'sum', 'currency', 'payeeINN', 'payeeName', 'payerINN', 'payerName'
     , 'purpose']
   dataSource: MatTableDataSource<Trn> = new MatTableDataSource()
@@ -41,9 +43,9 @@ export class ClientComponent implements OnInit {
   ) {
     this.currentBank = this.tokenStorage.getBank()
     this.currentUser = this.tokenStorage.getUser()
-
-    console.log('this.currentBank' + this.currentBank)
-    console.log('this.currentUser' + this.currentUser)
+    this.selection.changed.subscribe(() => {
+      this.buttonVisible = this.selection.selected.length.valueOf() === 1 ? true : false
+    })
 
     this.loadTrans(new Date())
   }
@@ -53,7 +55,11 @@ export class ClientComponent implements OnInit {
       this.currentTransactions = data
       this.dataSource = new MatTableDataSource(this.currentTransactions);
 
-      console.log(data)
+
+      this.dataSource.data =  this.dataSource.data.sort((t1,t2) => {
+        return (t1.edNo - t2.edNo) >= 0 ? 1 : -1
+      })
+
     }, error => {
       this.notificationService.showSnackBar(error.message || error.statusText);
     })
@@ -71,29 +77,37 @@ export class ClientComponent implements OnInit {
     this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 
-  addTransaction() {
+  addTransaction(type: string) {
     const createDialogTransaction = new MatDialogConfig();
     createDialogTransaction.width = '50em';
     createDialogTransaction.maxWidth = '50em';
     createDialogTransaction.minWidth = '50em';
 
-    createDialogTransaction.height = '45em';
-    createDialogTransaction.maxHeight = '45em';
-    createDialogTransaction.minHeight = '45em';
+    // createDialogTransaction.height = '45em';
+    // createDialogTransaction.maxHeight = '45em';
+    // createDialogTransaction.minHeight = '45em';
 
-    createDialogTransaction.data = this.dataSource
+
+    createDialogTransaction.data = {trnList: this.dataSource.data, selected: this.selection.selected, type: type}
+
     this.dialog.open(CreateTrnComponent, createDialogTransaction).afterClosed()
       .subscribe(result => {
-          this.dataSource._updateChangeSubscription()
+        if(type === 'Edit'){
+          const itrnnum = this.selection.selected[0].itrnnum
+          console.log('itrnnum')
+          console.log(itrnnum)
+          let index = this.dataSource.data.findIndex(t => t.itrnnum === itrnnum)
+          console.log('index')
+          console.log(index)
+          this.dataSource.data.splice(index, 1)
+        }
+        this.clearSelected()
+        this.dataSource._updateChangeSubscription()
       });
 
   }
 
-  editClick(id: any) {
-
-  }
-
-  clickTrnRow(row: Trn) {
+  dblClickTrnRow(row: Trn) {
     const viewDialogTransaction = new MatDialogConfig();
     viewDialogTransaction.width = '80%';
     viewDialogTransaction.height = '80%';
@@ -131,25 +145,31 @@ export class ClientComponent implements OnInit {
 
   deleteTransaction() {
 
-    if(this.selection.selected.length < 1) {
+    if (this.selection.selected.length < 1) {
       this.notificationService.showSnackBar("You mast checked transactions")
       return
     }
     this.selection.selected.filter(t => t.status == 1).forEach(trn => {
-        this.deleteList.push(trn.itrnnum)
+      this.deleteList.push(trn.itrnnum)
     })
 
-    if(this.deleteList.length < 1){
+    if (this.deleteList.length < 1) {
       this.clearSelected()
+      this.notificationService.showSnackBar("No transaction for delete")
+      return;
     }
 
-    console.log(this.selection.selected)
-    console.log(this.deleteList)
+    if (!confirm("Are you sure to delete " + this.selection.selected.length) + " transactions") {
+      this.selection.clear()
+      return;
+    }
 
-    this.trnService.deleteTrn({idList : this.deleteList}).subscribe( result => {
+    this.trnService.deleteTrn({idList: this.deleteList}).subscribe(result => {
+
+      console.log('ret result = ' + result)
 
       this.deleteList.forEach(trn => {
-        this.dataSource.data.splice(this.dataSource.data.findIndex(t => t.itrnnum === trn),1)
+        this.dataSource.data.splice(this.dataSource.data.findIndex(t => t.itrnnum === trn), 1)
       })
       this.dataSource._updateChangeSubscription()
       this.notificationService.showSnackBar("Success deleted " + this.selection.selected.length + ' transactions')
@@ -161,9 +181,50 @@ export class ClientComponent implements OnInit {
     })
   }
 
-  clearSelected(){
-    console.log('Selection cleared')
+  clearSelected() {
     this.selection.clear()
-    this.deleteList.splice(0,this.deleteList.length)
+    this.deleteList.splice(0, this.deleteList.length)
   }
+
+  clickTrnRow(i: any) {
+    if (this.selection.isSelected(this.currentTransactions[i]))
+      this.selection.deselect(this.currentTransactions[i])
+    else
+      this.selection.select(this.currentTransactions[i])
+  }
+
+
+  sortChanged(sort: Sort) {
+    console.log(sort.active  +'   '+sort.direction)
+    if (!sort.active || sort.direction === '') {
+      return;
+    }
+
+    this.dataSource.data = this.dataSource.data.sort((a, b) => {
+      const isAsc = sort.direction === 'asc';
+      switch (sort.active) {
+
+        case 'status' : return compare(a.status, b.status, isAsc);
+        case 'position' : return compare(a.position, b.position, isAsc);
+        case 'edNo' : return compare(a.edNo, b.edNo, isAsc);
+        case 'edDate' : return compare(a.edDate.getDate(), b.edDate.getDate(), isAsc);
+        case 'payeePersonalAcc' : return compare(a.payeePersonalAcc, b.payeePersonalAcc, isAsc);
+        case 'payerPersonalAcc' : return compare(a.payerPersonalAcc, b.payerPersonalAcc, isAsc);
+        case 'sum' : return compare(a.sum, b.sum, isAsc);
+        case 'currency' : return compare(a.currency, b.currency, isAsc);
+        case 'payeeINN' : return compare(a.payeeINN, b.payeeINN, isAsc);
+        case 'payeeName' : return compare(a.payeeName, b.payeeName, isAsc);
+        case 'payerINN' : return compare(a.payerINN, b.payerINN, isAsc);
+        case 'payerName' : return compare(a.payerName, b.payerName, isAsc);
+        case 'purpose' : return compare(a.purpose, b.purpose, isAsc);
+        default: return 0;
+      }
+    });
+
+  }
+
+}
+
+function compare(a: number | string, b: number | string, isAsc: boolean) {
+  return (a < b ? -1 : 1) * (isAsc ? 1 : -1);
 }

@@ -19,16 +19,16 @@
     </mat-grid-tile>
     <mat-grid-tile [colspan]="3" class="w-100" ></mat-grid-tile>
     <mat-grid-tile [colspan]="8" class="w-100" >
-        <button mat-stroked-button style="margin-left: 0.5em" (click)="addTransaction()">Create<mat-icon color="accent">note_add</mat-icon></button>
-        <button mat-stroked-button style="margin-left: 0.5em" (click)="addTransaction()">Clone<mat-icon color="accent">content_copy</mat-icon></button>
-        <button mat-stroked-button style="margin-left: 0.5em" (click)="addTransaction()">Edit<mat-icon color="accent">edit</mat-icon></button>
+        <button mat-stroked-button style="margin-left: 0.5em" (click)="addTransaction('Create')">Create<mat-icon color="accent">note_add</mat-icon></button>
+        <button mat-stroked-button style="margin-left: 0.5em" [disabled]="!buttonVisible" (click)="addTransaction('Clone')">Clone<mat-icon color="accent">content_copy</mat-icon></button>
+        <button mat-stroked-button style="margin-left: 0.5em" [disabled]="!buttonVisible" (click)="addTransaction('Edit')">Edit<mat-icon color="accent">edit</mat-icon></button>
         <button mat-stroked-button style="margin-left: 0.5em" (click)="deleteTransaction()">Delete<mat-icon color="accent">delete</mat-icon></button>
     </mat-grid-tile>
   </mat-grid-list>
 
   <mat-card-content >
     <div class="table-container">
-      <table mat-table [dataSource]="dataSource" matSort  class="mat-elevation-z8" style="width: 100%">
+      <table mat-table [dataSource]="dataSource" matSort (matSortChange)="sortChanged($event)" class="mat-elevation-z8" style="width: 100%" >
 
         <ng-container matColumnDef="select" sticky>
           <th mat-header-cell *matHeaderCellDef>
@@ -47,6 +47,15 @@
           </td>
         </ng-container>
 
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Status </th>
+          <td mat-cell *matCellDef="let element;" style="text-align: center">
+            <mat-icon *ngIf="element.status == 1" style="color: darkgreen">autorenew</mat-icon>
+            <mat-icon *ngIf="element.status == 2" style="color: darkblue">done</mat-icon>
+            <mat-icon *ngIf="element.status == 3" style="color: darkred">done_all</mat-icon>
+          </td>
+        </ng-container>
+
         <ng-container matColumnDef="position">
           <th mat-header-cell *matHeaderCellDef mat-sort-header> Num. </th>
           <td mat-cell *matCellDef="let element; let i = index">{{i + 1}}</td>
@@ -59,17 +68,17 @@
 
         <ng-container matColumnDef="edDate">
           <th mat-header-cell *matHeaderCellDef mat-sort-header > Date </th>
-          <td mat-cell *matCellDef="let element"> {{element.edDate | date: 'dd-MM-yyyy'}} </td>
+          <td mat-cell *matCellDef="let element" > {{element.edDate | date: 'dd-MM-yyyy'}} </td>
         </ng-container>
 
         <ng-container matColumnDef="payeePersonalAcc">
           <th mat-header-cell *matHeaderCellDef mat-sort-header > Payee Acc </th>
-          <td mat-cell *matCellDef="let element"> {{element.payeePersonalAcc}} </td>
+          <td mat-cell *matCellDef="let element" > {{element.payeePersonalAcc}} </td>
         </ng-container>
 
         <ng-container matColumnDef="payerPersonalAcc">
           <th mat-header-cell *matHeaderCellDef mat-sort-header > Payer Acc </th>
-          <td mat-cell *matCellDef="let element"> {{element.payerPersonalAcc }} </td>
+          <td mat-cell *matCellDef="let element" > {{element.payerPersonalAcc }} </td>
         </ng-container>
 
         <ng-container matColumnDef="sum">
@@ -108,7 +117,8 @@
         </ng-container>
 
         <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true" ></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns;" (click)="clickTrnRow(row)"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns; let i = index " (dblclick)="dblClickTrnRow(row)"
+            (click)="clickTrnRow(i)"></tr>
       </table>
     </div>
   </mat-card-content>
