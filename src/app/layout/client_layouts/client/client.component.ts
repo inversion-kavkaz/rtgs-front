@@ -135,9 +135,13 @@ export class ClientComponent implements OnInit {
       this.notificationService.showSnackBar("You mast checked transactions")
       return
     }
-    this.selection.selected.filter(t => t.status === 1).forEach(trn => {
+    this.selection.selected.filter(t => t.status == 1).forEach(trn => {
         this.deleteList.push(trn.itrnnum)
     })
+
+    if(this.deleteList.length < 1){
+      this.clearSelected()
+    }
 
     console.log(this.selection.selected)
     console.log(this.deleteList)
@@ -158,6 +162,7 @@ export class ClientComponent implements OnInit {
   }
 
   clearSelected(){
+    console.log('Selection cleared')
     this.selection.clear()
     this.deleteList.splice(0,this.deleteList.length)
   }
