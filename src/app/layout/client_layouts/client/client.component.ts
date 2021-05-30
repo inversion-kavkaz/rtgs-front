@@ -33,6 +33,8 @@ export class ClientComponent implements OnInit {
   dataSource: MatTableDataSource<Trn> = new MatTableDataSource()
   selection = new SelectionModel<Trn>(true, []);
   lastMove: number = new Date().getMinutes()
+  isChecked = true
+  filterData = {}
 
   constructor(
     private authService: AuthService,
@@ -48,7 +50,8 @@ export class ClientComponent implements OnInit {
       this.buttonVisible = this.selection.selected.length.valueOf() === 1 ? true : false
     })
 
-    this.loadTrans(new Date())
+    
+      this.loadTrans(new Date())
   }
 
   loadTrans(date: Date) {
@@ -244,6 +247,14 @@ export class ClientComponent implements OnInit {
       this.tokenStorage.logOut()
     }
     this.lastMove = nowMonent
+  }
+
+  setFilter() {
+
+  }
+
+  onChange() {
+    console.log('check date')
   }
 }
 

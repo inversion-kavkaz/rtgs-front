@@ -8,7 +8,7 @@ import {AdminComponent} from './layout/admin_layouts/admin/admin.component';
 import {ClientComponent} from './layout/client_layouts/client/client.component';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {MaterialModule} from "./material-module";
-import {ReactiveFormsModule} from "@angular/forms";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {HttpClientModule} from "@angular/common/http";
 import {authErrorInterceptorProviders} from "./auth/helper/error-interceptor.service";
 import {authInterceptorProviders} from "./auth/helper/auth-interceptor.service";
@@ -23,6 +23,7 @@ import {MatDatepickerModule} from "@angular/material/datepicker";
 import {MatNativeDateModule} from "@angular/material/core";
 import {NgxCurrencyModule} from "ngx-currency";
 import { BankHandbookComponent } from './layout/client_layouts/handbooks/bank-handbook/bank-handbook.component';
+import {MatSlideToggleModule} from "@angular/material/slide-toggle";
 
 @NgModule({
   declarations: [
@@ -48,7 +49,9 @@ import { BankHandbookComponent } from './layout/client_layouts/handbooks/bank-ha
     MatCheckboxModule,
     MatDatepickerModule,
     MatNativeDateModule,
-    NgxCurrencyModule
+    NgxCurrencyModule,
+    FormsModule,
+    MatSlideToggleModule
   ],
   providers: [authInterceptorProviders, authErrorInterceptorProviders, MatNativeDateModule, MatNativeDateModule ],
   bootstrap: [AppComponent]
