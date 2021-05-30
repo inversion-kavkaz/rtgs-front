@@ -22,7 +22,6 @@ export class BankHandbookComponent implements OnInit {
               private dialogRef: MatDialogRef<EditUserComponent>) {
     this.bankList = bankService.bankList
     this.dataSource = new MatTableDataSource(this.bankList)
-    console.log(this.dataSource.data)
   }
 
   ngOnInit(): void {

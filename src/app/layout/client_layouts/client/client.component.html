@@ -1,4 +1,4 @@
-<mat-card *ngIf="currentTransactions">
+<mat-card *ngIf="currentTransactions"  (mousemove)="move()">
   <mat-card-header style="display: flex;
                           padding-right: 5em;
                           flex-direction: row;
@@ -27,8 +27,8 @@
   </mat-grid-list>
 
   <mat-card-content >
-    <div class="table-container">
-      <table mat-table [dataSource]="dataSource" matSort (matSortChange)="sortChanged($event)" class="mat-elevation-z8" style="width: 100%" >
+    <div class="table-container" >
+      <table mat-table  cdk-virtual-scroll [dataSource]="dataSource" matSort (matSortChange)="sortChanged($event)" class="mat-elevation-z8" style="width: 100%" >
 
         <ng-container matColumnDef="select" sticky>
           <th mat-header-cell *matHeaderCellDef>

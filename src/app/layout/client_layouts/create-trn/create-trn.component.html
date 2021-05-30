@@ -20,7 +20,7 @@
             <div class="w-100 h-100">
               <mat-form-field > <!--Номер документа-->
                 <mat-label>Document number</mat-label>
-                <input matInput type="number" formControlName="edNo" >
+                <input matInput type="number" formControlName="edNo" (keypress)="checkKey($event)">
               </mat-form-field>
             </div>
           </mat-grid-tile>
@@ -41,16 +41,15 @@
                     </mat-select>
                 </mat-form-field>
                 </span>
-<!--                <input  currencyMask matInput formControlName="sum">-->
               </mat-form-field>
             </div>
           </mat-grid-tile>
 
           <mat-grid-tile>
             <div class="w-100 h-100">
-              <mat-form-field> <!--Валюта документа-->
+              <mat-form-field> <!--Тип документа-->
                 <mat-label>Document type</mat-label>
-                <input matInput type="text" formControlName="transKind">
+                <input matInput type="text" formControlName="transKind" (keypress)="checkKey($event)">
               </mat-form-field>
             </div>
           </mat-grid-tile>

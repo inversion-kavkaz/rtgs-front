@@ -27,11 +27,12 @@ export class ClientComponent implements OnInit {
   deleteList: number[] = []
   buttonVisible: boolean = false
 
-  displayedColumns: string[] = ['select', 'status','position', 'edNo', 'edDate', 'payeePersonalAcc'
+  displayedColumns: string[] = ['select', 'status', 'position', 'edNo', 'edDate', 'payeePersonalAcc'
     , 'payerPersonalAcc', 'sum', 'currency', 'payeeINN', 'payeeName', 'payerINN', 'payerName'
     , 'purpose']
   dataSource: MatTableDataSource<Trn> = new MatTableDataSource()
   selection = new SelectionModel<Trn>(true, []);
+  lastMove: number = new Date().getMinutes()
 
   constructor(
     private authService: AuthService,
@@ -56,7 +57,7 @@ export class ClientComponent implements OnInit {
       this.dataSource = new MatTableDataSource(this.currentTransactions);
 
 
-      this.dataSource.data =  this.dataSource.data.sort((t1,t2) => {
+      this.dataSource.data = this.dataSource.data.sort((t1, t2) => {
         return (t1.edNo - t2.edNo) >= 0 ? 1 : -1
       })
 
@@ -92,7 +93,7 @@ export class ClientComponent implements OnInit {
 
     this.dialog.open(CreateTrnComponent, createDialogTransaction).afterClosed()
       .subscribe(result => {
-        if(type === 'Edit'){
+        if (type === 'Edit') {
           const itrnnum = this.selection.selected[0].itrnnum
           console.log('itrnnum')
           console.log(itrnnum)
@@ -195,7 +196,7 @@ export class ClientComponent implements OnInit {
 
 
   sortChanged(sort: Sort) {
-    console.log(sort.active  +'   '+sort.direction)
+    console.log(sort.active + '   ' + sort.direction)
     if (!sort.active || sort.direction === '') {
       return;
     }
@@ -204,25 +205,46 @@ export class ClientComponent implements OnInit {
       const isAsc = sort.direction === 'asc';
       switch (sort.active) {
 
-        case 'status' : return compare(a.status, b.status, isAsc);
-        case 'position' : return compare(a.position, b.position, isAsc);
-        case 'edNo' : return compare(a.edNo, b.edNo, isAsc);
-        case 'edDate' : return compare(a.edDate.getDate(), b.edDate.getDate(), isAsc);
-        case 'payeePersonalAcc' : return compare(a.payeePersonalAcc, b.payeePersonalAcc, isAsc);
-        case 'payerPersonalAcc' : return compare(a.payerPersonalAcc, b.payerPersonalAcc, isAsc);
-        case 'sum' : return compare(a.sum, b.sum, isAsc);
-        case 'currency' : return compare(a.currency, b.currency, isAsc);
-        case 'payeeINN' : return compare(a.payeeINN, b.payeeINN, isAsc);
-        case 'payeeName' : return compare(a.payeeName, b.payeeName, isAsc);
-        case 'payerINN' : return compare(a.payerINN, b.payerINN, isAsc);
-        case 'payerName' : return compare(a.payerName, b.payerName, isAsc);
-        case 'purpose' : return compare(a.purpose, b.purpose, isAsc);
-        default: return 0;
+        case 'status' :
+          return compare(a.status, b.status, isAsc);
+        case 'position' :
+          return compare(a.position, b.position, isAsc);
+        case 'edNo' :
+          return compare(a.edNo, b.edNo, isAsc);
+        case 'edDate' :
+          return compare(a.edDate.getDate(), b.edDate.getDate(), isAsc);
+        case 'payeePersonalAcc' :
+          return compare(a.payeePersonalAcc, b.payeePersonalAcc, isAsc);
+        case 'payerPersonalAcc' :
+          return compare(a.payerPersonalAcc, b.payerPersonalAcc, isAsc);
+        case 'sum' :
+          return compare(a.sum, b.sum, isAsc);
+        case 'currency' :
+          return compare(a.currency, b.currency, isAsc);
+        case 'payeeINN' :
+          return compare(a.payeeINN, b.payeeINN, isAsc);
+        case 'payeeName' :
+          return compare(a.payeeName, b.payeeName, isAsc);
+        case 'payerINN' :
+          return compare(a.payerINN, b.payerINN, isAsc);
+        case 'payerName' :
+          return compare(a.payerName, b.payerName, isAsc);
+        case 'purpose' :
+          return compare(a.purpose, b.purpose, isAsc);
+        default:
+          return 0;
       }
     });
 
   }
 
+  move() {
+    let nowMonent = new Date().getMinutes()
+    if((nowMonent - this.lastMove) > 5) {
+      this.tokenStorage.logOut()
+    }
+    this.lastMove = nowMonent
+  }
 }
 
 function compare(a: number | string, b: number | string, isAsc: boolean) {

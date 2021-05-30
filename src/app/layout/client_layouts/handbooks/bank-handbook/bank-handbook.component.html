@@ -1,4 +1,4 @@
-<mat-card *ngIf="bankList.length > 0 else load">
+<mat-card *ngIf="bankList.length > 0    ">
 <mat-card-title >
   <h3>Bank handbook</h3>
   <input matInput (keyup)="applyFilter($event)" placeholder="Search">
@@ -35,5 +35,4 @@
   </mat-card-content>
 </mat-card>
 
-<ng-template #load> Banks handbook not loading please try again</ng-template>
 

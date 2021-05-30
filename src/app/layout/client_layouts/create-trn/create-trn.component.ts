@@ -11,6 +11,7 @@ import {numberValidator} from "../../../validators/validators";
 import {Trn} from "../../../model/trn";
 import {BankService} from "../../../service/bank.service";
 import {BankHandbookComponent} from "../handbooks/bank-handbook/bank-handbook.component";
+import {createSkipSelf} from "@angular/compiler/src/core";
 
 @Component({
   selector: 'app-create-trn',
@@ -155,12 +156,15 @@ export class CreateTrnComponent implements OnInit {
 
 
     this.dialog.open(BankHandbookComponent,createDialogBankGuid).afterClosed().subscribe(res => {
-      this.trnCreatedForm.value.payeeCorrespAcc = res.corrAcc
-      console.log(res.corrAcc)
-      console.log(this.trnCreatedForm.value.payeeCorrespAcc)
-      console.log('Dialog closed ')
-      console.log(res)
-
+      if(res != undefined)
+        this.trnCreatedForm.value.payeeCorrespAcc = res.corrAcc
     })
+  }
+
+  // @ts-ignore
+  checkKey(event: any): boolean {
+    if(event.charCode < 48 || event.charCode > 57) {
+      return false
+    }
   }
 }
