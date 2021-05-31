@@ -24,6 +24,9 @@ import {MatNativeDateModule} from "@angular/material/core";
 import {NgxCurrencyModule} from "ngx-currency";
 import { BankHandbookComponent } from './layout/client_layouts/handbooks/bank-handbook/bank-handbook.component';
 import {MatSlideToggleModule} from "@angular/material/slide-toggle";
+import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
+import { CorrMainComponent } from './layout/corr_layouts/corr-main/corr-main.component';
+import { CtrlMainComponent } from './layout/ctrl_layouts/ctrl-main/ctrl-main.component';
 
 @NgModule({
   declarations: [
@@ -35,7 +38,9 @@ import {MatSlideToggleModule} from "@angular/material/slide-toggle";
     AddUserComponent,
     ViewTrnComponent,
     CreateTrnComponent,
-    BankHandbookComponent
+    BankHandbookComponent,
+    CorrMainComponent,
+    CtrlMainComponent
   ],
   imports: [
     BrowserModule,
@@ -51,7 +56,8 @@ import {MatSlideToggleModule} from "@angular/material/slide-toggle";
     MatNativeDateModule,
     NgxCurrencyModule,
     FormsModule,
-    MatSlideToggleModule
+    MatSlideToggleModule,
+    MatProgressSpinnerModule
   ],
   providers: [authInterceptorProviders, authErrorInterceptorProviders, MatNativeDateModule, MatNativeDateModule ],
   bootstrap: [AppComponent]

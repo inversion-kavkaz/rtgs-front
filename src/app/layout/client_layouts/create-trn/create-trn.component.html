@@ -1,4 +1,6 @@
-<form [formGroup]="trnCreatedForm" style="padding: 0 0.3em 0 0.3em;" (click)="trnResult = 'undefined'">
+  <mat-spinner *ngIf="buttonDisabled" style="position: absolute;margin: 15em 0 0 20em;z-index: 100"></mat-spinner>
+
+<form [formGroup]="trnCreatedForm" style="padding: 0 0.3em 0 0.3em;" (click)="trnResult = 'undefined'" disabled="buttonDisabled">
   <mat-grid-list cols="2" rowHeight="10:8" >
     <mat-grid-tile colspan="2" rowspan="1">
       <mat-grid-tile-header> Create transaction </mat-grid-tile-header>
@@ -115,9 +117,9 @@
             <div class="w-100 h-100">
               <mat-form-field >
                 <mat-label>Payee cor acc</mat-label>
-                <input matInput type="text" formControlName="payeeCorrespAcc"  [value]="trnCreatedForm.value.payeeCorrespAcc">
+                <input matInput type="text" formControlName="payeeCorrespAcc" >
               </mat-form-field>
-              <button mat-mini-fab (click)="openBanksGuide()" [disabled]="!isBankLoaded">
+              <button mat-mini-fab (click)="openBanksGuide()" [disabled]="!isBankLoaded || buttonDisabled">
                 <mat-icon >account_balance</mat-icon>
               </button>
             </div>
@@ -144,14 +146,15 @@
           </mat-grid-tile>
         </mat-grid-list>
       </div>    </mat-grid-tile>
-
   </mat-grid-list>
   <mat-card-footer class="border-top">
     <div class="row">
-      <button  color="primary" class="w-25" [disabled]="trnCreatedForm.invalid" (click)="submit(1)" mat-button disableRipple> {{actionType}} </button>
-      <button  color="primary" class="w-25" [disabled]="trnCreatedForm.invalid" (click)="submit(2)" mat-button disableRipple> {{actionType}} and resume </button>
-      <button  color="primary" class="w-25" [disabled]="trnCreatedForm.invalid" (click)="submit(3)" mat-button disableRipple> {{actionType}} and clone </button>
-      <button (click)="closeDialog(0)" class="w-25" mat-button mat-dialog-close disableRipple> Cancel </button>
+      <button  color="primary" class="w-25" [disabled]="trnCreatedForm.invalid || buttonDisabled" (click)="submit(1)" mat-button disableRipple> {{actionType}} </button>
+      <button  color="primary" class="w-25" [disabled]="trnCreatedForm.invalid || buttonDisabled" (click)="submit(2)" mat-button disableRipple> {{actionType}} and resume </button>
+      <button  color="primary" class="w-25" [disabled]="trnCreatedForm.invalid || buttonDisabled" (click)="submit(3)" mat-button disableRipple> {{actionType}} and clone </button>
+      <button (click)="closeDialog(0)" [disabled]="buttonDisabled"
+              class="w-25" mat-button mat-dialog-close disableRipple> Cancel
+      </button>
     </div>
   </mat-card-footer>
 </form>

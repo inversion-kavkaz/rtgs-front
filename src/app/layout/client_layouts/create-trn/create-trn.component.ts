@@ -7,11 +7,9 @@ import {NotificationService} from "../../../service/notification.service";
 import {TokenStorageService} from "../../../service/token-storage.service";
 import {User} from "../../../model/user";
 import {Bank} from "../../../model/bank";
-import {numberValidator} from "../../../validators/validators";
 import {Trn} from "../../../model/trn";
 import {BankService} from "../../../service/bank.service";
 import {BankHandbookComponent} from "../handbooks/bank-handbook/bank-handbook.component";
-import {createSkipSelf} from "@angular/compiler/src/core";
 
 @Component({
   selector: 'app-create-trn',
@@ -30,6 +28,7 @@ export class CreateTrnComponent implements OnInit {
   actionType: string
   banksSprav: Bank[] = []
   isBankLoaded = false
+  buttonDisabled = false
 
 
   constructor(private dialogRef: MatDialogRef<EditUserComponent>,
@@ -40,21 +39,20 @@ export class CreateTrnComponent implements OnInit {
               @Inject(MAT_DIALOG_DATA) public data: any,
               private bankSevice: BankService,
               private dialog: MatDialog
-
   ) {
     this.currentTransaction = this.data.selected[0]
     this.currentBank = tokenStorageService.getBank()
     this.currentUser = tokenStorageService.getUser()
     this.trnCreatedForm = this.createProfileForm()
     this.actionType = this.data.type
-    if(this.bankSevice.bankList.length > 0){
+    if (this.bankSevice.bankList.length > 0) {
       this.isBankLoaded = true
       this.banksSprav = bankSevice.bankList
     } else
-    this.bankSevice.listLoaded.subscribe(res => {
-      this.isBankLoaded = true
-      this.banksSprav = bankSevice.bankList
-    })
+      this.bankSevice.listLoaded.subscribe(res => {
+        this.isBankLoaded = true
+        this.banksSprav = bankSevice.bankList
+      })
   }
 
   createProfileForm(): FormGroup {
@@ -90,13 +88,13 @@ export class CreateTrnComponent implements OnInit {
   }
 
   submit(action: number) {
-
+    this.setFormDisabled(true)
     const newTrn = {
       itrnnum: this.currentTransaction != undefined ? this.currentTransaction.itrnnum : null,
       itrnanum: this.currentTransaction != undefined ? this.currentTransaction.itrnanum : null,
       edNo: this.trnCreatedForm.value.edNo,
       edAuthor: this.trnCreatedForm.value.edAuthor,
-      edDate : this.date.value,
+      edDate: this.date.value,
       edReceiver: this.trnCreatedForm.value.edReceiver,
       transKind: this.trnCreatedForm.value.transKind,
       sum: this.trnCreatedForm.value.sum,
@@ -108,18 +106,21 @@ export class CreateTrnComponent implements OnInit {
       purpose: this.trnCreatedForm.value.purpose,
       payerName: this.trnCreatedForm.value.payerName,
       payeeName: this.trnCreatedForm.value.payeeName,
-      currency : this.trnCreatedForm.value.currency
+      currency: this.trnCreatedForm.value.currency
     }
 
     console.log(this.data.trnList)
 
 
-    if(this.actionType != 'Edit') {
+    if (this.actionType != 'Edit') {
       this.trnService.createTrn(newTrn).subscribe(result => {
         this.trnCRUD(result, action)
-      }, err => {
+      }, err =>
+      {
         this.trnResult = 'error'
         this.trnResultText = err.error.message || err.statusText
+      }, () => {
+        this.setFormDisabled(false)
       })
     } else {
       this.trnService.updateTrn(newTrn).subscribe(result => {
@@ -127,25 +128,27 @@ export class CreateTrnComponent implements OnInit {
       }, err => {
         this.trnResult = 'error'
         this.trnResultText = err.error.message || err.statusText
+      }, () => {
+        this.setFormDisabled(false)
       })
 
     }
 
   }
 
-  trnCRUD(result: any,action: number){
+  trnCRUD(result: any, action: number) {
     this.trnResultText = result.responseResult
     this.trnResult = result.trn === null ? 'error' : 'success'
 
-    if(result.trn != null)
+    if (result.trn != null)
 
       this.data.trnList.unshift(result.trn)
-    if(action === 1) {
+    if (action === 1) {
       setTimeout(() => {
         this.closeDialog(1)
       }, 2000)
     }
-    if(action === 2)
+    if (action === 2)
       this.trnCreatedForm.reset()
   }
 
@@ -154,17 +157,27 @@ export class CreateTrnComponent implements OnInit {
     createDialogBankGuid.width = '50%'
     createDialogBankGuid.maxHeight = '80%'
 
-
-    this.dialog.open(BankHandbookComponent,createDialogBankGuid).afterClosed().subscribe(res => {
-      if(res != undefined)
-        this.trnCreatedForm.value.payeeCorrespAcc = res.corrAcc
+    this.dialog.open(BankHandbookComponent, createDialogBankGuid).afterClosed().subscribe(res => {
+      if (res != undefined)
+        this.trnCreatedForm.controls.payeeCorrespAcc.setValue(res.corrAcc)
     })
   }
 
   // @ts-ignore
   checkKey(event: any): boolean {
-    if(event.charCode < 48 || event.charCode > 57) {
+    if (event.charCode < 48 || event.charCode > 57) {
       return false
+    }
+  }
+
+  setFormDisabled(type: boolean) {
+    this.buttonDisabled = type
+    if(type){
+      this.trnCreatedForm.disable({emitEvent: !type})
+      this.date.disable({emitEvent: !type})
+    } else{
+      this.trnCreatedForm.enable({emitEvent: !type})
+      this.date.enable({emitEvent: !type})
     }
   }
 }

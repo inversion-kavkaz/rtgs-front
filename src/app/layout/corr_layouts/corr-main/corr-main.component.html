@@ -1,9 +1,8 @@
-<mat-card *ngIf="currentTransactions.length > 0"  (mousemove)="move()">
+<mat-card  (mousemove)="move()">
 
 
   <mat-grid-list cols="10" rowHeight="10:2">
     <mat-grid-tile>
-<!--      <mat-slide-toggle [(ngModel)]="isChecked" (change)="onChange()">Only today</mat-slide-toggle>-->
     </mat-grid-tile>
     <mat-grid-tile colspan="8"></mat-grid-tile>
     <mat-grid-tile>
@@ -14,11 +13,7 @@
     </mat-grid-tile>
   </mat-grid-list>
 
-<!--  <mat-card-title style="margin-top: 1em">-->
-<!--    <button mat-stroked-button style="margin-left: 0.5em" (click)="addTransaction('Create')">Filter<mat-icon>filter_list</mat-icon></button>-->
-<!--  </mat-card-title>-->
-
-  <mat-grid-list cols="18" rowHeight="50" style="border-bottom: 1px darkcyan solid;margin-top: 1em;border-top: 1px darkcyan solid">
+    <mat-grid-list cols="18" rowHeight="50" style="border-bottom: 1px darkcyan solid;margin-top: 1em;border-top: 1px darkcyan solid">
     <mat-grid-tile [colspan]="5" >
       <mat-form-field style=" width: 80%">
         <input matInput (keyup)="applyFilter($event)" placeholder="Search">
@@ -26,11 +21,9 @@
     </mat-grid-tile>
     <mat-grid-tile [colspan]="1" class="w-100" ></mat-grid-tile>
     <mat-grid-tile [colspan]="10" class="w-100" >
-        <button mat-stroked-button style="margin-left: 0.5em" (click)="addTransaction('Create')">Create <mat-icon color="accent">note_add</mat-icon></button>
-        <button mat-stroked-button style="margin-left: 0.5em" [disabled]="!buttonVisible" (click)="addTransaction('Clone')">Clone <mat-icon color="accent">content_copy</mat-icon></button>
-        <button mat-stroked-button style="margin-left: 0.5em" [disabled]="!buttonVisible" (click)="addTransaction('Edit')">Edit <mat-icon color="accent">edit</mat-icon></button>
-        <button mat-stroked-button style="margin-left: 0.5em" (click)="deleteTransaction()">Delete <mat-icon color="accent">delete</mat-icon></button>
-        <button mat-stroked-button style="margin-left: 0.5em" (click)="setFilter()">Filter <mat-icon color="accent">filter_list</mat-icon></button>
+      <button mat-stroked-button style="margin-left: 0.5em" [disabled]="!buttonVisible" (click)="addTransaction('Clone')">Registered <mat-icon color="accent">content_copy</mat-icon></button>
+      <button mat-stroked-button style="margin-left: 0.5em" [disabled]="!buttonVisible" (click)="addTransaction('Edit')">Return <mat-icon color="accent">edit</mat-icon></button>
+      <button mat-stroked-button style="margin-left: 0.5em" (click)="setFilter()">Filter <mat-icon color="accent">filter_list</mat-icon></button>
     </mat-grid-tile>
   </mat-grid-list>
 

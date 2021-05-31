@@ -4,6 +4,7 @@ import {Router} from "@angular/router";
 import {NotificationService} from "../../service/notification.service";
 import {TokenStorageService} from "../../service/token-storage.service";
 import {AuthService} from "../../service/auth.service";
+import {compare} from "../../utils/utils";
 
 @Component({
   selector: 'app-login',
@@ -50,10 +51,24 @@ export class LoginComponent implements OnInit {
 
 
       this.notificationService.showSnackBar('Successfully logged in');
-      if(data.user.roles[0] === 'ROLE_ADMIN')
-        this.router.navigate(['/admin']);
-      else
-        this.router.navigate(['/client']);
+
+
+      switch (data.user.roles[0]) {
+        case 'ROLE_ADMIN' : this.router.navigate(['/admin']); return
+        case 'ROLE_USER' : this.router.navigate(['/client']); return
+        case 'ROLE_CTRL' : this.router.navigate(['/ctrl']); return
+        case 'ROLE_CORR' : this.router.navigate(['/corr']); return
+
+        default:
+        window.location.reload();
+      }
+
+
+      // if(data.user.roles[0] === 'ROLE_ADMIN')
+      //   this.router.navigate(['/admin']);
+      // else
+      //   this.router.navigate(['/client']);
+      //
 //      window.location.reload();
     }, error => {
       if(error.error.login === 'Invalid Username'){

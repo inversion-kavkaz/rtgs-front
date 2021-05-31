@@ -1,26 +1,26 @@
-import {Component, OnInit} from '@angular/core';
-import {TokenStorageService} from "../../../service/token-storage.service";
-import {NotificationService} from "../../../service/notification.service";
-import {Router} from "@angular/router";
-import {MatDialog, MatDialogConfig} from "@angular/material/dialog";
-import {TrnService} from "../../../service/trn.service";
+import { Component, OnInit } from '@angular/core';
 import {Bank} from "../../../model/bank";
 import {User} from "../../../model/user";
 import {Trn} from "../../../model/trn";
 import {MatTableDataSource} from "@angular/material/table";
 import {SelectionModel} from "@angular/cdk/collections";
-import {ViewTrnComponent} from "../view-trn/view-trn.component";
-import {CreateTrnComponent} from "../create-trn/create-trn.component";
 import {AuthService} from "../../../service/auth.service";
+import {TokenStorageService} from "../../../service/token-storage.service";
+import {NotificationService} from "../../../service/notification.service";
+import {Router} from "@angular/router";
+import {TrnService} from "../../../service/trn.service";
+import {MatDialog, MatDialogConfig} from "@angular/material/dialog";
+import {CreateTrnComponent} from "../../client_layouts/create-trn/create-trn.component";
+import {ViewTrnComponent} from "../../client_layouts/view-trn/view-trn.component";
 import {Sort} from "@angular/material/sort";
 import {compare} from "../../../utils/utils";
 
 @Component({
-  selector: 'app-client',
-  templateUrl: './client.component.html',
-  styleUrls: ['./client.component.scss']
+  selector: 'app-ctrl-main',
+  templateUrl: './ctrl-main.component.html',
+  styleUrls: ['./ctrl-main.component.scss']
 })
-export class ClientComponent implements OnInit {
+export class CtrlMainComponent implements OnInit {
 
   currentBank: Bank
   currentUser: User
@@ -45,14 +45,12 @@ export class ClientComponent implements OnInit {
     private trnService: TrnService,
     private dialog: MatDialog
   ) {
-
-    console.log('corr logged')
     this.currentBank = this.tokenStorage.getBank()
     this.currentUser = this.tokenStorage.getUser()
     this.selection.changed.subscribe(() => {
       this.buttonVisible = this.selection.selected.length.valueOf() === 1 ? true : false
     })
-      this.loadTrans(new Date())
+    this.loadTrans(new Date())
 
     this.filterData = {
       date: null,
@@ -255,6 +253,5 @@ export class ClientComponent implements OnInit {
   onChange() {
     console.log('check date')
   }
+
 }
-
-
