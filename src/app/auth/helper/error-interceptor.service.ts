@@ -16,6 +16,13 @@ export class ErrorInterceptorService implements HttpInterceptor {
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     return next.handle(req).pipe(catchError(err => {
+      //console.log(err.status);
+      // Сервис лежит
+      if (err.status === 0) {
+        const error = "Can't connect service";
+        this.notificationService.showSnackBar(error);
+        return throwError(error);
+      }
       if (err.status === 401 && this.tokenService.getToken()) {
         this.tokenService.logOut();
         window.location.reload();
