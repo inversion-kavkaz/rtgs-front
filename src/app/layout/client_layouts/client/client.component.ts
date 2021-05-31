@@ -46,7 +46,6 @@ export class ClientComponent implements OnInit {
     private dialog: MatDialog
   ) {
 
-    console.log('corr logged')
     this.currentBank = this.tokenStorage.getBank()
     this.currentUser = this.tokenStorage.getUser()
     this.selection.changed.subscribe(() => {

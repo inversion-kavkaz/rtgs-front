@@ -1,0 +1,27 @@
+.table-container {
+  position: relative;
+  max-height: 75vh;
+  overflow: auto;
+}
+table{
+  min-width: 1500px;
+}
+tr.mat-row:hover {
+  cursor: pointer;
+  background-color: whitesmoke;
+}
+//Это шапка таблицы
+::ng-deep .mat-sort-header-container {
+}
+
+th.mat-column-position, td.mat-column-position {
+  padding-left: 1em;
+}
+
+.mat-cell{
+  padding: 0 0.5em 0 0.5em;
+}
+
+.mat-header-cell{
+  padding: 0 0.5em 0 0.5em;
+}

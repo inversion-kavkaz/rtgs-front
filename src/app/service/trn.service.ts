@@ -7,9 +7,12 @@ import {formatDate} from '@angular/common';
 import {AuthService} from "./auth.service";
 // @ts-ignore
 import {TrnResponse} from "../model/trnResponse";
+import {Filter} from "../model/filter";
 
 
 const TRN_URL_ALL = 'http://localhost:5000/api/trn/getAll'
+const TRN_URL_FILTER = 'http://localhost:5000/api/trn/getFilteringTrn'
+
 const TRN_URL_CREATE = 'http://localhost:5000/api/trn/create'
 const TRN_URL_DELETE = 'http://localhost:5000/api/trn/delete'
 const TRN_URL_UPDATE = 'http://localhost:5000/api/trn/update'
@@ -39,6 +42,15 @@ export class TrnService {
       {
       date : reqDate,
       login : this.currentLogin
+    })
+  }
+
+  getFilteringTrn(filter: Filter): Observable<any>{
+    console.log('filter' + filter)
+    return this.http.post(TRN_URL_FILTER,
+      {
+        filter : filter,
+        login : this.currentLogin
     })
   }
 

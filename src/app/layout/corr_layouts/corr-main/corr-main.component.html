@@ -21,8 +21,8 @@
     </mat-grid-tile>
     <mat-grid-tile [colspan]="1" class="w-100" ></mat-grid-tile>
     <mat-grid-tile [colspan]="10" class="w-100" >
-      <button mat-stroked-button style="margin-left: 0.5em" [disabled]="!buttonVisible" (click)="addTransaction('Clone')">Registered <mat-icon color="accent">content_copy</mat-icon></button>
-      <button mat-stroked-button style="margin-left: 0.5em" [disabled]="!buttonVisible" (click)="addTransaction('Edit')">Return <mat-icon color="accent">edit</mat-icon></button>
+      <button mat-stroked-button style="margin-left: 0.5em" [disabled]="!buttonVisible" (click)="register()">Registered <mat-icon style="color: darkgreen">check_circle</mat-icon></button>
+      <button mat-stroked-button style="margin-left: 0.5em" [disabled]="!buttonVisible" (click)="return()">Return <mat-icon color="warn"> highlight_off</mat-icon></button>
       <button mat-stroked-button style="margin-left: 0.5em" (click)="setFilter()">Filter <mat-icon color="accent">filter_list</mat-icon></button>
     </mat-grid-tile>
   </mat-grid-list>
@@ -98,8 +98,8 @@
         </ng-container>
 
         <ng-container matColumnDef="payeeName">
-          <th mat-header-cell *matHeaderCellDef > Payee name </th>
-          <td mat-cell *matCellDef="let element" mat-sort-header style="white-space: normal; word-wrap: break-word; max-width: 30vh;"> {{element.payeeName }} </td>
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Payee name </th>
+          <td mat-cell *matCellDef="let element" style="white-space: normal; word-wrap: break-word; max-width: 30vh;"> {{element.payeeName }} </td>
         </ng-container>
 
         <ng-container matColumnDef="payerINN">

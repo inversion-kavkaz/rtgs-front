@@ -14,6 +14,7 @@ import {CreateTrnComponent} from "../../client_layouts/create-trn/create-trn.com
 import {ViewTrnComponent} from "../../client_layouts/view-trn/view-trn.component";
 import {Sort} from "@angular/material/sort";
 import {compare} from "../../../utils/utils";
+import {Filter} from "../../../model/filter";
 
 @Component({
   selector: 'app-corr-main',
@@ -34,7 +35,7 @@ export class CorrMainComponent implements OnInit {
   selection = new SelectionModel<Trn>(true, []);
   lastMove: number = new Date().getMinutes()
   isChecked = true
-  filterData = {}
+  filterData  = {}
 
   constructor(
     private authService: AuthService,
@@ -49,16 +50,32 @@ export class CorrMainComponent implements OnInit {
     this.selection.changed.subscribe(() => {
       this.buttonVisible = this.selection.selected.length.valueOf() === 1 ? true : false
     })
-    this.loadTrans(new Date())
 
-    this.filterData = {
-      date: null,
+    this.initFilter()
+    this.loadTrans()
 
-    }
-  }
+   }
 
-  loadTrans(date: Date) {
-    this.trnService.getTranByDate(date).subscribe(data => {
+   initFilter(){
+     this.filterData = {
+       startDate: new Date(),
+       endDate: new Date(),
+       login: "",
+       sum: 0,
+       payerPersonalAcc: "",
+       payerCorrespAcc: this.currentBank.corrAcc,
+       payeePersonalAcc: "",
+       payeeCorrespAcc: "",
+       purpose: "",
+       payerName: "",
+       payeeName: "",
+       currency : "",
+       status : 4
+     }
+   }
+
+  loadTrans() {
+    this.trnService.getFilteringTrn(this.filterData as Filter).subscribe(data => {
       this.currentTransactions = data
       this.dataSource = new MatTableDataSource(this.currentTransactions);
       this.dataSource.data = this.dataSource.data.sort((t1, t2) => {
@@ -82,31 +99,6 @@ export class CorrMainComponent implements OnInit {
     this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 
-  addTransaction(type: string) {
-    const createDialogTransaction = new MatDialogConfig();
-    createDialogTransaction.width = '50em';
-    createDialogTransaction.maxWidth = '50em';
-    createDialogTransaction.minWidth = '50em';
-    // createDialogTransaction.height = '45em';
-    // createDialogTransaction.maxHeight = '45em';
-    // createDialogTransaction.minHeight = '45em';
-    createDialogTransaction.data = {trnList: this.dataSource.data, selected: this.selection.selected, type: type}
-    this.dialog.open(CreateTrnComponent, createDialogTransaction).afterClosed()
-      .subscribe(result => {
-        if (type === 'Edit') {
-          const itrnnum = this.selection.selected[0].itrnnum
-          console.log('itrnnum')
-          console.log(itrnnum)
-          let index = this.dataSource.data.findIndex(t => t.itrnnum === itrnnum)
-          console.log('index')
-          console.log(index)
-          this.dataSource.data.splice(index, 1)
-        }
-        this.clearSelected()
-        this.dataSource._updateChangeSubscription()
-      });
-
-  }
 
   dblClickTrnRow(row: Trn) {
     const viewDialogTransaction = new MatDialogConfig();
@@ -119,7 +111,7 @@ export class CorrMainComponent implements OnInit {
     this.dialog.open(ViewTrnComponent, viewDialogTransaction).afterClosed()
       .subscribe(result => {
         if (result != undefined && result.res != 0)
-          this.loadTrans(new Date())
+          this.loadTrans()
       });
   }
 
@@ -144,48 +136,6 @@ export class CorrMainComponent implements OnInit {
     return `${this.selection.isSelected(row) ? 'deselect' : 'select'} row ${row.position + 1}`;
   }
 
-  deleteTransaction() {
-
-    if (this.selection.selected.length < 1) {
-      this.notificationService.showSnackBar("You mast checked transactions")
-      return
-    }
-    this.selection.selected.filter(t => t.status == 1).forEach(trn => {
-      this.deleteList.push(trn.itrnnum)
-    })
-
-    if (this.deleteList.length < 1) {
-      this.clearSelected()
-      this.notificationService.showSnackBar("No transaction for delete")
-      return;
-    }
-
-    if (!confirm("Are you sure to delete " + this.selection.selected.length) + " transactions") {
-      this.selection.clear()
-      return;
-    }
-
-    this.trnService.deleteTrn({idList: this.deleteList}).subscribe(result => {
-
-      console.log('ret result = ' + result)
-
-      this.deleteList.forEach(trn => {
-        this.dataSource.data.splice(this.dataSource.data.findIndex(t => t.itrnnum === trn), 1)
-      })
-      this.dataSource._updateChangeSubscription()
-      this.notificationService.showSnackBar("Success deleted " + this.selection.selected.length + ' transactions')
-
-    }, error => {
-      this.notificationService.showSnackBar("delete Error " + error.message)
-    }, () => {
-      this.clearSelected()
-    })
-  }
-
-  clearSelected() {
-    this.selection.clear()
-    this.deleteList.splice(0, this.deleteList.length)
-  }
 
   clickTrnRow(i: any) {
     if (this.selection.isSelected(this.currentTransactions[i]))
@@ -249,8 +199,11 @@ export class CorrMainComponent implements OnInit {
 
   }
 
-  onChange() {
-    console.log('check date')
+  return() {
+
   }
 
+  register() {
+
+  }
 }
