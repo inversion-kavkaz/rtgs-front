@@ -61,8 +61,8 @@
   </mat-grid-list>
 
   <mat-card-content>
-    <div class="table-container" *ngIf="!isLoading; else loding">
-      <table mat-table cdk-virtual-scroll  [dataSource]="dataSource" matSort (matSortChange)="sortChanged($event)"
+    <div class="table-container" *ngIf="!isLoading; else loding" (scroll)="scroll($event)">
+      <table mat-table cdk-virtual-scroll #rowItem [dataSource]="dataSource" matSort (matSortChange)="sortChanged($event) "
              class="mat-elevation-z8" style="width: 100%">
 
         <ng-container matColumnDef="select" sticky>
@@ -156,7 +156,7 @@
 
         <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
         <tr mat-row *matRowDef="let row; columns: displayedColumns; let i = index " (dblclick)="dblClickTrnRow(row)"
-            (click)="clickTrnRow(i)"></tr>
+            (click)="clickTrnRow(i)" ></tr>
       </table>
     </div>
   </mat-card-content>

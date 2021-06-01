@@ -1,8 +1,8 @@
-import {Component, OnInit} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {Bank} from "../../../model/bank";
 import {User} from "../../../model/user";
 import {Trn} from "../../../model/trn";
-import {MatTableDataSource} from "@angular/material/table";
+import {MatRow, MatTableDataSource} from "@angular/material/table";
 import {SelectionModel} from "@angular/cdk/collections";
 import {AuthService} from "../../../service/auth.service";
 import {TokenStorageService} from "../../../service/token-storage.service";
@@ -15,7 +15,6 @@ import {Sort} from "@angular/material/sort";
 import {compare} from "../../../utils/utils";
 import {Filter} from "../../../model/filter";
 import {BalanceService} from "../../../service/balance.service";
-import {Balance} from "../../../model/balance";
 
 @Component({
   selector: 'app-corr-main',
@@ -40,14 +39,16 @@ export class CorrMainComponent implements OnInit {
   isLoading = true
   balance: any = {}
 
+  @ViewChild("rowItem", {read: ElementRef,static: false}) private myIdentifier?: ElementRef
+
   constructor(
-            private authService: AuthService,
-            private tokenStorage: TokenStorageService,
-            private notificationService: NotificationService,
-            private router: Router,
-            private trnService: TrnService,
-            private dialog: MatDialog,
-            private balanceServise : BalanceService
+    private authService: AuthService,
+    private tokenStorage: TokenStorageService,
+    private notificationService: NotificationService,
+    private router: Router,
+    private trnService: TrnService,
+    private dialog: MatDialog,
+    private balanceServise: BalanceService
   ) {
     this.currentBank = this.tokenStorage.getBank()
     this.currentUser = this.tokenStorage.getUser()
@@ -60,16 +61,14 @@ export class CorrMainComponent implements OnInit {
 
   }
 
-  initBalance(){
+  initBalance() {
     const balDate = {
       data: null,
       curr: "RUR",
       acc: this.filterData.payerCorrespAcc
     }
-    this.balanceServise.getBalance(balDate).subscribe( res => {
+    this.balanceServise.getBalance(balDate).subscribe(res => {
       this.balance = res
-      console.log(res)
-
     }, error => {
       this.notificationService.showSnackBar("Balance loading error")
     })
@@ -79,7 +78,7 @@ export class CorrMainComponent implements OnInit {
     this.filterData.startDate = new Date()
     this.filterData.endDate = new Date()
     this.filterData.payerCorrespAcc = this.currentBank.corrAcc
-    }
+  }
 
 
   loadTrans() {
@@ -88,9 +87,11 @@ export class CorrMainComponent implements OnInit {
     this.trnService.getFilteringTrn(this.filterData as Filter).subscribe(data => {
       this.currentTransactions = data
       this.dataSource = new MatTableDataSource(this.currentTransactions);
+      console.log('Height: ' + this.myIdentifier?.nativeElement.offsetHeight);
+
     }, error => {
       this.notificationService.showSnackBar(error.message || error.statusText);
-    }, () =>{
+    }, () => {
       this.isLoading = false
     })
   }
@@ -159,8 +160,6 @@ export class CorrMainComponent implements OnInit {
     }
 
 
-
-
     this.dataSource.data = this.dataSource.data.sort((a, b) => {
       const isAsc = sort.direction === 'asc';
       switch (sort.active) {
@@ -216,7 +215,7 @@ export class CorrMainComponent implements OnInit {
 
   register() {
 
-    this.trnService.affirmTrn(this.selection.selected.map(t => t.itrnnum)).subscribe( res => {
+    this.trnService.affirmTrn(this.selection.selected.map(t => t.itrnnum)).subscribe(res => {
       const resList: any[] = res as []
       resList.filter(r => r.affirmResult === 'SUCCESS').forEach(r => {
         // @ts-ignore
@@ -225,7 +224,7 @@ export class CorrMainComponent implements OnInit {
 
       this.selection.clear()
 
-    }, error=> {
+    }, error => {
       console.log(error)
       this.notificationService.showSnackBar("Affirm error")
     })
@@ -236,5 +235,14 @@ export class CorrMainComponent implements OnInit {
     let currentAcc = (event.target as HTMLSelectElement).value;
     this.filterData.payerCorrespAcc = currentAcc
     this.loadTrans()
+  }
+
+
+  scroll(event: Event) {
+    // @ts-ignore
+    console.log(event.target.scrollTop)
+    console.log(this.myIdentifier?.nativeElement.clientHeight);
+
+
   }
 }
