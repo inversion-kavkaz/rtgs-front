@@ -14,6 +14,8 @@ import {ViewTrnComponent} from "../../client_layouts/view-trn/view-trn.component
 import {Sort} from "@angular/material/sort";
 import {compare} from "../../../utils/utils";
 import {Filter} from "../../../model/filter";
+import {BalanceService} from "../../../service/balance.service";
+import {Balance} from "../../../model/balance";
 
 @Component({
   selector: 'app-corr-main',
@@ -36,14 +38,16 @@ export class CorrMainComponent implements OnInit {
   isChecked = true
   filterData: any = {}
   isLoading = true
+  balance: any = {}
 
   constructor(
-    private authService: AuthService,
-    private tokenStorage: TokenStorageService,
-    private notificationService: NotificationService,
-    private router: Router,
-    private trnService: TrnService,
-    private dialog: MatDialog
+            private authService: AuthService,
+            private tokenStorage: TokenStorageService,
+            private notificationService: NotificationService,
+            private router: Router,
+            private trnService: TrnService,
+            private dialog: MatDialog,
+            private balanceServise : BalanceService
   ) {
     this.currentBank = this.tokenStorage.getBank()
     this.currentUser = this.tokenStorage.getUser()
@@ -56,6 +60,21 @@ export class CorrMainComponent implements OnInit {
 
   }
 
+  initBalance(){
+    const balDate = {
+      data: null,
+      curr: "RUR",
+      acc: this.filterData.payerCorrespAcc
+    }
+    this.balanceServise.getBalance(balDate).subscribe( res => {
+      this.balance = res
+      console.log(res)
+
+    }, error => {
+      this.notificationService.showSnackBar("Balance loading error")
+    })
+  }
+
   initFilter() {
     this.filterData.startDate = new Date()
     this.filterData.endDate = new Date()
@@ -64,6 +83,7 @@ export class CorrMainComponent implements OnInit {
 
 
   loadTrans() {
+    this.initBalance()
     this.isLoading = true
     this.trnService.getFilteringTrn(this.filterData as Filter).subscribe(data => {
       this.currentTransactions = data
