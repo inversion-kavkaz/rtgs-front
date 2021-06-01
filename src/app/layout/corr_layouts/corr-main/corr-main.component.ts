@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {Bank} from "../../../model/bank";
 import {User} from "../../../model/user";
 import {Trn} from "../../../model/trn";
@@ -10,7 +10,6 @@ import {NotificationService} from "../../../service/notification.service";
 import {Router} from "@angular/router";
 import {TrnService} from "../../../service/trn.service";
 import {MatDialog, MatDialogConfig} from "@angular/material/dialog";
-import {CreateTrnComponent} from "../../client_layouts/create-trn/create-trn.component";
 import {ViewTrnComponent} from "../../client_layouts/view-trn/view-trn.component";
 import {Sort} from "@angular/material/sort";
 import {compare} from "../../../utils/utils";
@@ -35,7 +34,8 @@ export class CorrMainComponent implements OnInit {
   selection = new SelectionModel<Trn>(true, []);
   lastMove: number = new Date().getMinutes()
   isChecked = true
-  filterData  = {}
+  filterData: any = {}
+  isLoading = true
 
   constructor(
     private authService: AuthService,
@@ -48,42 +48,30 @@ export class CorrMainComponent implements OnInit {
     this.currentBank = this.tokenStorage.getBank()
     this.currentUser = this.tokenStorage.getUser()
     this.selection.changed.subscribe(() => {
-      this.buttonVisible = this.selection.selected.length.valueOf() === 1 ? true : false
+      this.buttonVisible = this.selection.selected.length.valueOf() > 0 ? true : false
     })
 
     this.initFilter()
     this.loadTrans()
 
-   }
+  }
 
-   initFilter(){
-     this.filterData = {
-       startDate: new Date(),
-       endDate: new Date(),
-       login: "",
-       sum: 0,
-       payerPersonalAcc: "",
-       payerCorrespAcc: this.currentBank.corrAcc,
-       payeePersonalAcc: "",
-       payeeCorrespAcc: "",
-       purpose: "",
-       payerName: "",
-       payeeName: "",
-       currency : "",
-       status : 4
-     }
-   }
+  initFilter() {
+    this.filterData.startDate = new Date()
+    this.filterData.endDate = new Date()
+    this.filterData.payerCorrespAcc = this.currentBank.corrAcc
+    }
+
 
   loadTrans() {
+    this.isLoading = true
     this.trnService.getFilteringTrn(this.filterData as Filter).subscribe(data => {
       this.currentTransactions = data
       this.dataSource = new MatTableDataSource(this.currentTransactions);
-      this.dataSource.data = this.dataSource.data.sort((t1, t2) => {
-        return (t1.edNo - t2.edNo) >= 0 ? 1 : -1
-      })
-
     }, error => {
       this.notificationService.showSnackBar(error.message || error.statusText);
+    }, () =>{
+      this.isLoading = false
     })
   }
 
@@ -150,17 +138,20 @@ export class CorrMainComponent implements OnInit {
       return;
     }
 
+
+
+
     this.dataSource.data = this.dataSource.data.sort((a, b) => {
       const isAsc = sort.direction === 'asc';
       switch (sort.active) {
 
-        case 'status' :
+        case 'status'   :
           return compare(a.status, b.status, isAsc);
         case 'position' :
           return compare(a.position, b.position, isAsc);
-        case 'edNo' :
+        case 'edNo'     :
           return compare(a.edNo, b.edNo, isAsc);
-        case 'edDate' :
+        case 'edDate'   :
           return compare(a.edDate.getDate(), b.edDate.getDate(), isAsc);
         case 'payeePersonalAcc' :
           return compare(a.payeePersonalAcc, b.payeePersonalAcc, isAsc);
@@ -189,7 +180,7 @@ export class CorrMainComponent implements OnInit {
 
   move() {
     let nowMonent = new Date().getMinutes()
-    if((nowMonent - this.lastMove) > 5) {
+    if ((nowMonent - this.lastMove) > 5) {
       this.tokenStorage.logOut()
     }
     this.lastMove = nowMonent
@@ -205,5 +196,25 @@ export class CorrMainComponent implements OnInit {
 
   register() {
 
+    this.trnService.affirmTrn(this.selection.selected.map(t => t.itrnnum)).subscribe( res => {
+      const resList: any[] = res as []
+      resList.filter(r => r.affirmResult === 'SUCCESS').forEach(r => {
+        // @ts-ignore
+        this.dataSource.data.find(p => p.itrnnum === r.itrnnum).status = 4
+      })
+
+      this.selection.clear()
+
+    }, error=> {
+      console.log(error)
+      this.notificationService.showSnackBar("Affirm error")
+    })
+
+  }
+
+  accChanged(event: any) {
+    let currentAcc = (event.target as HTMLSelectElement).value;
+    this.filterData.payerCorrespAcc = currentAcc
+    this.loadTrans()
   }
 }

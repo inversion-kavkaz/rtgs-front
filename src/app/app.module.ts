@@ -27,6 +27,7 @@ import {MatSlideToggleModule} from "@angular/material/slide-toggle";
 import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
 import { CorrMainComponent } from './layout/corr_layouts/corr-main/corr-main.component';
 import { CtrlMainComponent } from './layout/ctrl_layouts/ctrl-main/ctrl-main.component';
+import {MatListModule} from "@angular/material/list";
 
 @NgModule({
   declarations: [
@@ -57,7 +58,8 @@ import { CtrlMainComponent } from './layout/ctrl_layouts/ctrl-main/ctrl-main.com
     NgxCurrencyModule,
     FormsModule,
     MatSlideToggleModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    MatListModule
   ],
   providers: [authInterceptorProviders, authErrorInterceptorProviders, MatNativeDateModule, MatNativeDateModule ],
   bootstrap: [AppComponent]

@@ -1,4 +1,4 @@
-<mat-card  (mousemove)="move()">
+<mat-card (mousemove)="move()">
 
 
   <mat-grid-list cols="10" rowHeight="10:2">
@@ -6,30 +6,49 @@
     </mat-grid-tile>
     <mat-grid-tile colspan="8"></mat-grid-tile>
     <mat-grid-tile>
-      <button matTooltip="Profile" mat-icon-button  (click)="logout()">
-        <mat-icon color="accent" >logout</mat-icon>
+      <button matTooltip="Profile" mat-icon-button (click)="logout()">
+        <mat-icon color="accent">logout</mat-icon>
         logout
       </button>
     </mat-grid-tile>
   </mat-grid-list>
 
-    <mat-grid-list cols="18" rowHeight="50" style="border-bottom: 1px darkcyan solid;margin-top: 1em;border-top: 1px darkcyan solid">
+  <mat-grid-list cols="18" rowHeight="50"
+                 style="border-bottom: 1px darkcyan solid;margin-top: 1em;">
     <mat-grid-tile [colspan]="5" >
-      <mat-form-field style=" width: 80%">
+      <mat-form-field style=" width: 80%;padding-top: 1em">
         <input matInput (keyup)="applyFilter($event)" placeholder="Search">
       </mat-form-field>
     </mat-grid-tile>
-    <mat-grid-tile [colspan]="1" class="w-100" ></mat-grid-tile>
-    <mat-grid-tile [colspan]="10" class="w-100" >
-      <button mat-stroked-button style="margin-left: 0.5em" [disabled]="!buttonVisible" (click)="register()">Registered <mat-icon style="color: darkgreen">check_circle</mat-icon></button>
-      <button mat-stroked-button style="margin-left: 0.5em" [disabled]="!buttonVisible" (click)="return()">Return <mat-icon color="warn"> highlight_off</mat-icon></button>
-      <button mat-stroked-button style="margin-left: 0.5em" (click)="setFilter()">Filter <mat-icon color="accent">filter_list</mat-icon></button>
+
+    <mat-grid-tile [colspan]="4" >
+      <mat-form-field style="padding-top: 1em">
+        <mat-label style="color: darkblue">Choose account</mat-label>
+        <select matNativeControl (change)="accChanged($event)" >
+          <option value="30109810100000000028" selected>30109810100000000028</option>
+          <option value="30109840100000000345">30109840100000000345</option>
+          <option value="30109760100000000345">30109760100000000345</option>
+        </select>
+      </mat-form-field>
+    </mat-grid-tile>
+    <mat-grid-tile [colspan]="4"></mat-grid-tile>
+    <mat-grid-tile [colspan]="5" >
+      <button mat-stroked-button style="margin-left: 0.5em" [disabled]="!buttonVisible" (click)="register()">Registered
+        <mat-icon style="color: darkgreen">check_circle</mat-icon>
+      </button>
+      <button mat-stroked-button style="margin-left: 0.5em" [disabled]="!buttonVisible" (click)="return()">Return
+        <mat-icon color="warn"> highlight_off</mat-icon>
+      </button>
+      <button mat-stroked-button style="margin-left: 0.5em" (click)="setFilter()">Filter
+        <mat-icon color="accent">filter_list</mat-icon>
+      </button>
     </mat-grid-tile>
   </mat-grid-list>
 
-  <mat-card-content >
-    <div class="table-container" >
-      <table mat-table  cdk-virtual-scroll [dataSource]="dataSource" matSort (matSortChange)="sortChanged($event)" class="mat-elevation-z8" style="width: 100%" >
+  <mat-card-content>
+    <div class="table-container" *ngIf="!isLoading; else loding">
+      <table mat-table cdk-virtual-scroll  [dataSource]="dataSource" matSort (matSortChange)="sortChanged($event)"
+             class="mat-elevation-z8" style="width: 100%">
 
         <ng-container matColumnDef="select" sticky>
           <th mat-header-cell *matHeaderCellDef>
@@ -49,79 +68,89 @@
         </ng-container>
 
         <ng-container matColumnDef="status">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header> Status </th>
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Status</th>
           <td mat-cell *matCellDef="let element;" style="text-align: center">
             <mat-icon *ngIf="element.status == 1" style="color: darkgreen">autorenew</mat-icon>
-            <mat-icon *ngIf="element.status == 4" style="color: darkblue">done</mat-icon>
-            <mat-icon *ngIf="element.status == 1" style="color: darkred">done_all</mat-icon>
+            <!--            <mat-icon *ngIf="element.status == 4" style="color: darkblue">done</mat-icon>-->
+            <mat-icon *ngIf="element.status == 4 " style="color: darkred">done_all</mat-icon>
           </td>
         </ng-container>
 
         <ng-container matColumnDef="position">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header> Num. </th>
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Num.</th>
           <td mat-cell *matCellDef="let element; let i = index">{{i + 1}}</td>
         </ng-container>
 
         <ng-container matColumnDef="edNo">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header > Doc. num </th>
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Doc. num</th>
           <td mat-cell *matCellDef="let element"> {{element.edNo}} </td>
         </ng-container>
 
         <ng-container matColumnDef="edDate">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header > Date </th>
-          <td mat-cell *matCellDef="let element" > {{element.edDate | date: 'dd-MM-yyyy'}} </td>
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Date</th>
+          <td mat-cell *matCellDef="let element"> {{element.edDate | date: 'dd-MM-yyyy'}} </td>
         </ng-container>
 
         <ng-container matColumnDef="payeePersonalAcc">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header > Payee Acc </th>
-          <td mat-cell *matCellDef="let element" > {{element.payeePersonalAcc}} </td>
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Payee Acc</th>
+          <td mat-cell *matCellDef="let element"> {{element.payeePersonalAcc}} </td>
         </ng-container>
 
         <ng-container matColumnDef="payerPersonalAcc">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header > Payer Acc </th>
-          <td mat-cell *matCellDef="let element" > {{element.payerPersonalAcc }} </td>
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Payer Acc</th>
+          <td mat-cell *matCellDef="let element"> {{element.payerPersonalAcc }} </td>
         </ng-container>
 
         <ng-container matColumnDef="sum">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header > Sum </th>
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Sum</th>
           <td mat-cell *matCellDef="let element"> {{element.sum }} </td>
         </ng-container>
 
         <ng-container matColumnDef="currency">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header > Currency </th>
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Currency</th>
           <td mat-cell *matCellDef="let element"> {{element.currency }} </td>
         </ng-container>
 
         <ng-container matColumnDef="payeeINN">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header > Payer INN </th>
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Payer INN</th>
           <td mat-cell *matCellDef="let element"> {{element.payeeINN }} </td>
         </ng-container>
 
         <ng-container matColumnDef="payeeName">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header> Payee name </th>
-          <td mat-cell *matCellDef="let element" style="white-space: normal; word-wrap: break-word; max-width: 30vh;"> {{element.payeeName }} </td>
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Payee name</th>
+          <td mat-cell *matCellDef="let element"
+              style="white-space: normal; word-wrap: break-word; max-width: 30vh;"> {{element.payeeName }} </td>
         </ng-container>
 
         <ng-container matColumnDef="payerINN">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header > Payer INN </th>
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Payer INN</th>
           <td mat-cell *matCellDef="let element"> {{element.payerINN }} </td>
         </ng-container>
 
         <ng-container matColumnDef="payerName">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header > Payer name </th>
-          <td mat-cell *matCellDef="let element" style="white-space: normal; word-wrap: break-word; max-width: 30vh;"> {{element.payerName }} </td>
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Payer name</th>
+          <td mat-cell *matCellDef="let element"
+              style="white-space: normal; word-wrap: break-word; max-width: 30vh;"> {{element.payerName }} </td>
         </ng-container>
 
         <ng-container matColumnDef="purpose">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header > Purpose </th>
-          <td mat-cell *matCellDef="let element" style="white-space: normal; word-wrap: break-word; max-width: 30vh;">{{element.purpose }}</td>
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Purpose</th>
+          <td mat-cell *matCellDef="let element"
+              style="white-space: normal; word-wrap: break-word; max-width: 30vh;">{{element.purpose }}</td>
         </ng-container>
 
-        <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true" ></tr>
+        <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
         <tr mat-row *matRowDef="let row; columns: displayedColumns; let i = index " (dblclick)="dblClickTrnRow(row)"
             (click)="clickTrnRow(i)"></tr>
       </table>
     </div>
   </mat-card-content>
 </mat-card>
+
+<ng-template #loding >
+  <div class="w-100" style="text-align: center">
+    <h3 style="margin-top: 1em">Loading...</h3>
+  </div>
+</ng-template>
+
 

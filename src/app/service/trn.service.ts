@@ -17,6 +17,8 @@ const TRN_URL_CREATE = 'http://localhost:5000/api/trn/create'
 const TRN_URL_DELETE = 'http://localhost:5000/api/trn/delete'
 const TRN_URL_UPDATE = 'http://localhost:5000/api/trn/update'
 
+const TRN_URL_AFFIRM = 'http://localhost:5000/api/trn/affirm'
+
 const DATE_FORMAT = 'yyyy-MM-dd';
 
 
@@ -46,7 +48,6 @@ export class TrnService {
   }
 
   getFilteringTrn(filter: Filter): Observable<any>{
-    console.log('filter' + filter)
     return this.http.post(TRN_URL_FILTER,
       {
         filter : filter,
@@ -64,5 +65,9 @@ export class TrnService {
 
   updateTrn(trn: any): Observable<any>{
     return this.http.post(TRN_URL_UPDATE,trn)
+  }
+
+  affirmTrn(idList: any): Observable<any>{
+    return this.http.post(TRN_URL_AFFIRM, { idList : idList})
   }
 }
