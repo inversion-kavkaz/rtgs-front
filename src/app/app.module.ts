@@ -41,7 +41,7 @@ import {MatListModule} from "@angular/material/list";
     CreateTrnComponent,
     BankHandbookComponent,
     CorrMainComponent,
-    CtrlMainComponent
+    CtrlMainComponent,
   ],
   imports: [
     BrowserModule,
