@@ -1,0 +1,47 @@
+
+<form [formGroup]="filterGroup">
+<mat-grid-list [cols]="6" rowHeight="10:4">
+
+
+  <mat-grid-tile [colspan]="6"><h3>Set filter</h3></mat-grid-tile>
+
+  <mat-grid-tile [colspan]="1">Set document date:</mat-grid-tile>
+
+  <mat-grid-tile [colspan]="2">
+    <mat-form-field class="example-form-field" appearance="fill">
+      <mat-label>Second campaign</mat-label>
+      <mat-date-range-input
+        [formGroup]="filterGroup"
+        [rangePicker]="campaignTwoPicker"
+        [comparisonStart]="startDate"
+        [comparisonEnd]="endDate">
+        <input matStartDate placeholder="Start date" formControlName="start">
+        <input matEndDate placeholder="End date" formControlName="end">
+      </mat-date-range-input>
+      <mat-datepicker-toggle matSuffix [for]="campaignTwoPicker"></mat-datepicker-toggle>
+      <mat-date-range-picker #campaignTwoPicker></mat-date-range-picker>
+    </mat-form-field>
+  </mat-grid-tile>
+
+  <mat-grid-tile [colspan]="1">Set document status:</mat-grid-tile>
+
+  <mat-grid-tile [colspan]="2">
+    <mat-form-field style="">
+      <mat-label >Choose transaction status</mat-label>
+      <select matNativeControl formControlName = "status">
+        <option value="" selected></option>
+        <option value="1" >Input</option>
+        <option value="4">Registered</option>
+      </select>
+    </mat-form-field>
+  </mat-grid-tile>
+
+</mat-grid-list>
+
+
+<div class="w-100 border-top" style="margin: 2em auto">
+  <button  color="primary" class="w-25" mat-button disableRipple (click)="submit()"> Set and clone </button>
+  <button  class="w-25" mat-button mat-dialog-close disableRipple> Cancel </button>
+</div>
+
+</form>

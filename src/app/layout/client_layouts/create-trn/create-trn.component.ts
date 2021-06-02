@@ -31,7 +31,7 @@ export class CreateTrnComponent implements OnInit {
   buttonDisabled = false
 
 
-  constructor(private dialogRef: MatDialogRef<EditUserComponent>,
+  constructor(private dialogRef: MatDialogRef<CreateTrnComponent>,
               private fb: FormBuilder,
               private notificationService: NotificationService,
               private tokenStorageService: TokenStorageService,

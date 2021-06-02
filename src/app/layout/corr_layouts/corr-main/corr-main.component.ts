@@ -15,6 +15,10 @@ import {Sort} from "@angular/material/sort";
 import {compare} from "../../../utils/utils";
 import {Filter} from "../../../model/filter";
 import {BalanceService} from "../../../service/balance.service";
+import {Balance} from "../../../model/balance";
+import {filter} from "rxjs/operators";
+import {FilterLayoutComponent} from "../../filter-layout/filter-layout.component";
+import {RepoprtComponent} from "../../repoprt/repoprt.component";
 
 @Component({
   selector: 'app-corr-main',
@@ -25,7 +29,6 @@ export class CorrMainComponent implements OnInit {
   currentBank: Bank
   currentUser: User
   currentTransactions: Trn[] = []
-  deleteList: number[] = []
   buttonVisible: boolean = false
 
   displayedColumns: string[] = ['select', 'status', 'position', 'edNo', 'edDate', 'payeePersonalAcc'
@@ -34,10 +37,17 @@ export class CorrMainComponent implements OnInit {
   dataSource: MatTableDataSource<Trn> = new MatTableDataSource()
   selection = new SelectionModel<Trn>(true, []);
   lastMove: number = new Date().getMinutes()
-  isChecked = true
   filterData: any = {}
   isLoading = true
-  balance: any = {}
+  balance: Balance = {
+    real_balance : 0,
+    planned_balance : 0,
+    payment_position : 0
+  }
+  pageNum = 0
+  pageSize = 50
+  links = ['Output documents', 'Input documents'];
+  activeLink = this.links[0];
 
   @ViewChild("rowItem", {read: ElementRef,static: false}) private myIdentifier?: ElementRef
 
@@ -58,6 +68,7 @@ export class CorrMainComponent implements OnInit {
 
     this.initFilter()
     this.loadTrans()
+    this.initBalance()
 
   }
 
@@ -68,26 +79,31 @@ export class CorrMainComponent implements OnInit {
       acc: this.filterData.payerCorrespAcc
     }
     this.balanceServise.getBalance(balDate).subscribe(res => {
-      this.balance = res
+      this.balance.real_balance = +res.real_balance.toString().replace(",",".")
+      this.balance.planned_balance = +res.planned_balance.toString().replace(",",".")
+      this.balance.payment_position = +res.payment_position.toString().replace(",",".")
     }, error => {
       this.notificationService.showSnackBar("Balance loading error")
     })
   }
 
   initFilter() {
-    this.filterData.startDate = new Date()
-    this.filterData.endDate = new Date()
+    this.filterData.startDate = null //new Date()
+    this.filterData.endDate = null //new Date()
     this.filterData.payerCorrespAcc = this.currentBank.corrAcc
   }
 
-
   loadTrans() {
-    this.initBalance()
     this.isLoading = true
-    this.trnService.getFilteringTrn(this.filterData as Filter).subscribe(data => {
-      this.currentTransactions = data
-      this.dataSource = new MatTableDataSource(this.currentTransactions);
-      console.log('Height: ' + this.myIdentifier?.nativeElement.offsetHeight);
+    this.trnService.getFilteringTrn(this.filterData as Filter, this.pageNum, this.pageSize).subscribe(data => {
+      this.currentTransactions = data as Trn[]
+      this.dataSource.data = this.currentTransactions
+
+      /**Временно убрал возможно понадобится для постраничной загрузки*/
+      // this.currentTransactions.forEach(t => {
+      //   this.dataSource.data.push(t)
+      // })
+      /**------------------------------------------------------------*/
 
     }, error => {
       this.notificationService.showSnackBar(error.message || error.statusText);
@@ -107,7 +123,6 @@ export class CorrMainComponent implements OnInit {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource.filter = filterValue.trim().toLowerCase();
   }
-
 
   dblClickTrnRow(row: Trn) {
     const viewDialogTransaction = new MatDialogConfig();
@@ -145,14 +160,12 @@ export class CorrMainComponent implements OnInit {
     return `${this.selection.isSelected(row) ? 'deselect' : 'select'} row ${row.position + 1}`;
   }
 
-
   clickTrnRow(i: any) {
     if (this.selection.isSelected(this.currentTransactions[i]))
       this.selection.deselect(this.currentTransactions[i])
     else
       this.selection.select(this.currentTransactions[i])
   }
-
 
   sortChanged(sort: Sort) {
     if (!sort.active || sort.direction === '') {
@@ -206,7 +219,15 @@ export class CorrMainComponent implements OnInit {
   }
 
   setFilter() {
-
+    const viewDialogFilter = new MatDialogConfig();
+    viewDialogFilter.width = '60%';
+    viewDialogFilter.height = '50%';
+    viewDialogFilter.data = {filter: this.filterData};
+    this.dialog.open(FilterLayoutComponent, viewDialogFilter).afterClosed().subscribe(res => {
+      if(res === 1) {
+        this.loadTrans()
+      }
+    })
   }
 
   return() {
@@ -223,6 +244,7 @@ export class CorrMainComponent implements OnInit {
       })
 
       this.selection.clear()
+      this.initBalance()
 
     }, error => {
       console.log(error)
@@ -235,14 +257,47 @@ export class CorrMainComponent implements OnInit {
     let currentAcc = (event.target as HTMLSelectElement).value;
     this.filterData.payerCorrespAcc = currentAcc
     this.loadTrans()
+    this.initBalance()
   }
 
-
   scroll(event: Event) {
-    // @ts-ignore
-    console.log(event.target.scrollTop)
-    console.log(this.myIdentifier?.nativeElement.clientHeight);
 
 
+    // let tableDivHeight = this.myIdentifier?.nativeElement.clientHeight
+    // // @ts-ignore
+    // let scrollDif = tableDivHeight - event.target.scrollTop
+    //
+    // console.log('tableDivHeight = ' + tableDivHeight)
+    // console.log('scrollDif = ' + scrollDif)
+    //
+    //
+    // if(scrollDif < tableDivHeight / 3 && !this.isLoading){
+    //   console.log("load next page");
+    //   this.pageNum += 1
+    //   this.loadTrans()
+    // }
+  }
+
+  onSelectTab(tabNum: number) {
+    console.log(tabNum)
+    if(tabNum === 1) {
+      this.filterData.payeeCorrespAcc = this.currentBank.corrAcc
+      this.filterData.payerCorrespAcc = null
+      this.filterData.status = 4
+    }
+    else {
+      this.filterData.payerCorrespAcc = this.currentBank.corrAcc
+      this.filterData.payeeCorrespAcc = null
+      this.filterData.status = null
+    }
+    this.loadTrans()
+  }
+
+  openReportDialog() {
+    const reportDialog = new MatDialogConfig();
+    reportDialog.width = '80%';
+    reportDialog.height = '80%';
+
+    this.dialog.open(RepoprtComponent,reportDialog)
   }
 }

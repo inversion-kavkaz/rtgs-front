@@ -1,9 +1,9 @@
 <mat-card (mousemove)="move()">
 
 
-  <mat-grid-list cols="10" rowHeight="10:2">
-    <mat-grid-tile ></mat-grid-tile>
-    <mat-grid-tile colspan="8"></mat-grid-tile>
+  <mat-grid-list cols="10" rowHeight="10:4">
+    <mat-grid-tile colspan="3"></mat-grid-tile>
+    <mat-grid-tile colspan="6"></mat-grid-tile>
     <mat-grid-tile>
       <button matTooltip="Profile" mat-icon-button (click)="logout()">
         <mat-icon color="accent">logout</mat-icon>
@@ -12,19 +12,31 @@
     </mat-grid-tile>
   </mat-grid-list>
 
-  <mat-grid-list cols="10" rowHeight="10:2">
 
-    <mat-grid-tile ><div class="w-100">Real balance:</div></mat-grid-tile>
-    <mat-grid-tile >{{ balance.real_balance | currency : "" : "": '.2' }}</mat-grid-tile>
-    <mat-grid-tile [colspan]="8"></mat-grid-tile>
 
-    <mat-grid-tile ><div class="w-100">Planned balance:</div></mat-grid-tile>
-    <mat-grid-tile >{{ balance.planned_balance}}</mat-grid-tile>
-    <mat-grid-tile colspan="8"></mat-grid-tile>
+  <mat-grid-list cols="10" rowHeight="10:2" >
 
-    <mat-grid-tile ><div class="w-100">Payment position:</div></mat-grid-tile>
-    <mat-grid-tile >{{ balance.payment_position}}</mat-grid-tile>
-    <mat-grid-tile colspan="8"></mat-grid-tile>
+    <mat-grid-tile ><div class="w-100" style="color: darkgray">Real balance:</div></mat-grid-tile>
+    <mat-grid-tile >{{ balance.real_balance | currency: "" : "" : ".2" | space}}</mat-grid-tile>
+    <mat-grid-tile [colspan]="5"></mat-grid-tile >
+
+    <mat-grid-tile [colspan]="3" [rowspan]="3">
+      <nav mat-tab-nav-bar >
+        <a mat-tab-link *ngFor="let link of links; let i = index"
+           (click)="onSelectTab(i);activeLink = link"
+           [active]="activeLink == link"> {{link}} </a>
+      </nav>
+    </mat-grid-tile>
+
+
+    <mat-grid-tile ><div class="w-100" style="color: darkgray">Planned balance:</div></mat-grid-tile>
+    <mat-grid-tile >{{ balance.planned_balance | currency: "" : "" : ".2" | space}}</mat-grid-tile>
+    <mat-grid-tile colspan="5"></mat-grid-tile>
+
+
+    <mat-grid-tile ><div class="w-100" style="color: darkgray">Payment position:</div></mat-grid-tile>
+    <mat-grid-tile >{{ balance.payment_position | currency: "" : "" : ".2" | space}}</mat-grid-tile>
+    <mat-grid-tile colspan="5"></mat-grid-tile>
 
   </mat-grid-list>
 
@@ -46,8 +58,8 @@
         </select>
       </mat-form-field>
     </mat-grid-tile>
-    <mat-grid-tile [colspan]="4"></mat-grid-tile>
-    <mat-grid-tile [colspan]="5" >
+    <mat-grid-tile [colspan]="3"></mat-grid-tile>
+    <mat-grid-tile [colspan]="6" >
       <button mat-stroked-button style="margin-left: 0.5em" [disabled]="!buttonVisible" (click)="register()">Registered
         <mat-icon style="color: darkgreen">check_circle</mat-icon>
       </button>
@@ -56,6 +68,9 @@
       </button>
       <button mat-stroked-button style="margin-left: 0.5em" (click)="setFilter()">Filter
         <mat-icon color="accent">filter_list</mat-icon>
+      </button>
+      <button mat-stroked-button style="margin-left: 0.5em" (click)="openReportDialog()">Reports
+        <mat-icon color="accent">print </mat-icon>
       </button>
     </mat-grid-tile>
   </mat-grid-list>
@@ -167,5 +182,4 @@
     <h3 style="margin-top: 1em">Loading...</h3>
   </div>
 </ng-template>
-
 

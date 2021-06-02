@@ -28,6 +28,11 @@ import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
 import { CorrMainComponent } from './layout/corr_layouts/corr-main/corr-main.component';
 import { CtrlMainComponent } from './layout/ctrl_layouts/ctrl-main/ctrl-main.component';
 import {MatListModule} from "@angular/material/list";
+import { SpacePipe } from './utils/space.pipe';
+import {MatTabsModule} from "@angular/material/tabs";
+import { FilterLayoutComponent } from './layout/filter-layout/filter-layout.component';
+import {PdfViewerModule} from "ng2-pdf-viewer";
+import { RepoprtComponent } from './layout/repoprt/repoprt.component';
 
 @NgModule({
   declarations: [
@@ -42,6 +47,9 @@ import {MatListModule} from "@angular/material/list";
     BankHandbookComponent,
     CorrMainComponent,
     CtrlMainComponent,
+    SpacePipe,
+    FilterLayoutComponent,
+    RepoprtComponent,
   ],
   imports: [
     BrowserModule,
@@ -59,7 +67,9 @@ import {MatListModule} from "@angular/material/list";
     FormsModule,
     MatSlideToggleModule,
     MatProgressSpinnerModule,
-    MatListModule
+    MatListModule,
+    MatTabsModule,
+    PdfViewerModule
   ],
   providers: [authInterceptorProviders, authErrorInterceptorProviders, MatNativeDateModule, MatNativeDateModule ],
   bootstrap: [AppComponent]

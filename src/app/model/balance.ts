@@ -1,5 +1,5 @@
 export interface Balance {
-  real_balance : string
-  planned_balance  : string
-  payment_position  : string
+  real_balance : number
+  planned_balance  : number
+  payment_position  : number
 }
