@@ -294,10 +294,13 @@ export class CorrMainComponent implements OnInit {
   }
 
   openReportDialog() {
-    const reportDialog = new MatDialogConfig();
-    reportDialog.width = '80%';
-    reportDialog.height = '80%';
 
-    this.dialog.open(RepoprtComponent,reportDialog)
+    window.location.href= "http://172.16.0.146:1216/download"
+    //document.location = "http://172.16.0.146:1216/download"
+    // const reportDialog = new MatDialogConfig();
+    // reportDialog.width = '80%';
+    // reportDialog.height = '80%';
+    //
+    // this.dialog.open(RepoprtComponent,reportDialog)
   }
 }
