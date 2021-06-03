@@ -1,86 +1,80 @@
 <mat-card class="admin-card" *ngIf="bankUsers">
-  <mat-card-header style="display: flex;
-                          padding-right: 5em;
-                          flex-direction: row;
-                          justify-content: space-between;">
-    <h2 i18n>Administration panel</h2>
+  <mat-card-title>
+    <div class="w-100" style="text-align: center">
+      <h2>Administration panel</h2>
+    </div>
+  </mat-card-title>
 
-    <button matTooltip="Profile" mat-icon-button  (click)="logout()">
-      <mat-icon color="accent" i18n>logout</mat-icon>
-      logout
-    </button>
-
-  </mat-card-header>
-
-  <mat-grid-list cols="20" rowHeight="50" >
-    <mat-grid-tile [colspan] ="2">
+  <mat-grid-list cols="20" rowHeight="50">
+    <mat-grid-tile [colspan]="2">
       <mat-card-subtitle class="w-100" style="font-weight: bold;margin: 0;">Bank name:</mat-card-subtitle>
     </mat-grid-tile>
-    <mat-grid-tile [colspan] ="18">
-      <mat-card-subtitle class="w-100" style="margin: 0;">{{currentBank.bankName}}, {{currentBank.bankAdress}}</mat-card-subtitle>
+    <mat-grid-tile [colspan]="18">
+      <mat-card-subtitle class="w-100" style="margin: 0;">{{currentBank.bankName}}
+        , {{currentBank.bankAdress}}</mat-card-subtitle>
     </mat-grid-tile>
   </mat-grid-list>
 
-  <mat-grid-list cols="20" rowHeight="10:2" >
-    <mat-grid-tile [colspan] ="2">
+  <mat-grid-list cols="20" rowHeight="10:2">
+    <mat-grid-tile [colspan]="2">
       <mat-card-subtitle class="w-100" style="font-weight: bold;margin: 0;">User name:</mat-card-subtitle>
     </mat-grid-tile>
-    <mat-grid-tile [colspan] ="18">
+    <mat-grid-tile [colspan]="18">
       <mat-card-subtitle class="w-100" style="margin: 0;">{{currentUser.ename}}</mat-card-subtitle>
     </mat-grid-tile>
   </mat-grid-list>
 
 
   <mat-grid-list cols="4" rowHeight="10:1" style="border-bottom: 1px darkcyan solid;margin-top: 1em">
-  <mat-grid-tile >
-    <mat-form-field style=" width: 80%">
-      <input matInput (keyup)="applyFilter($event)" placeholder="Search">
-    </mat-form-field>
-  </mat-grid-tile>
-  <mat-grid-tile></mat-grid-tile>
-  <mat-grid-tile></mat-grid-tile>
-  <mat-grid-tile >
-    <mat-card-subtitle style="margin-top: 1em">
-      <button i18n matTooltip="Add person" mat-icon-button (click)="addUser()">
-        <mat-icon color="accent">person_add</mat-icon>
-        Add user
-      </button>
-    </mat-card-subtitle>
-  </mat-grid-tile>
+    <mat-grid-tile>
+      <mat-form-field style=" width: 80%">
+        <input matInput (keyup)="applyFilter($event)" placeholder="Search">
+      </mat-form-field>
+    </mat-grid-tile>
+    <mat-grid-tile></mat-grid-tile>
+    <mat-grid-tile></mat-grid-tile>
+    <mat-grid-tile>
+      <mat-card-subtitle style="margin-top: 1em">
+        <button i18n matTooltip="Add person" mat-icon-button (click)="addUser()">
+          <mat-icon color="accent">person_add</mat-icon>
+          Add user
+        </button>
+      </mat-card-subtitle>
+    </mat-grid-tile>
   </mat-grid-list>
 
-  <mat-card-content >
+  <mat-card-content>
     <div class="table-container">
-      <table mat-table [dataSource]="dataSource" matSort  class="mat-elevation-z8" style="width: 100%">
+      <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8" style="width: 100%">
 
-      <ng-container matColumnDef="position">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header i18n> Num. </th>
-        <td mat-cell *matCellDef="let element; let i = index">{{i + 1}}</td>
-      </ng-container>
+        <ng-container matColumnDef="position">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header i18n> Num.</th>
+          <td mat-cell *matCellDef="let element; let i = index">{{i + 1}}</td>
+        </ng-container>
 
-      <ng-container matColumnDef="ename">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header i18n> Name </th>
-        <td mat-cell *matCellDef="let element"> {{element.ename}} </td>
-      </ng-container>
+        <ng-container matColumnDef="ename">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header i18n> Name</th>
+          <td mat-cell *matCellDef="let element"> {{element.ename}} </td>
+        </ng-container>
 
-      <ng-container matColumnDef="login">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header i18n> Login </th>
-        <td mat-cell *matCellDef="let element"> {{element.login}} </td>
-      </ng-container>
+        <ng-container matColumnDef="login">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header i18n> Login</th>
+          <td mat-cell *matCellDef="let element"> {{element.login}} </td>
+        </ng-container>
 
-      <ng-container matColumnDef="roles">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header i18n> Roles </th>
-        <td mat-cell *matCellDef="let element"> {{element.roles}} </td>
-      </ng-container>
+        <ng-container matColumnDef="roles">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header i18n> Roles</th>
+          <td mat-cell *matCellDef="let element"> {{element.roles}} </td>
+        </ng-container>
 
-      <ng-container matColumnDef="createdDate">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header i18n> Created Date </th>
-        <td mat-cell *matCellDef="let element"> {{element.createdDate | date:'d-M-yyyy H:mm:ss' }} </td>
-      </ng-container>
+        <ng-container matColumnDef="createdDate">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header i18n> Created Date</th>
+          <td mat-cell *matCellDef="let element"> {{element.createdDate | date:'d-M-yyyy H:mm:ss' }} </td>
+        </ng-container>
 
-        <ng-container matColumnDef="delete" >
-          <th mat-header-cell *matHeaderCellDef i18n> Delete user </th>
-          <td mat-cell *matCellDef="let element" >
+        <ng-container matColumnDef="delete">
+          <th mat-header-cell *matHeaderCellDef i18n> Delete user</th>
+          <td mat-cell *matCellDef="let element">
             <button matTooltip="delete user" mat-icon-button (click)="delClick(element.id)">
               <mat-icon color="accent">delete</mat-icon>
             </button>
@@ -88,7 +82,7 @@
         </ng-container>
 
         <ng-container matColumnDef="edit">
-          <th mat-header-cell *matHeaderCellDef i18n> Edit user </th>
+          <th mat-header-cell *matHeaderCellDef i18n> Edit user</th>
           <td mat-cell *matCellDef="let element">
             <button matTooltip="edit user" mat-icon-button (click)="editClick(element.id)">
               <mat-icon color="accent">edit</mat-icon>
@@ -96,9 +90,9 @@
           </td>
         </ng-container>
 
-      <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true" ></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-    </table>
+        <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
     </div>
   </mat-card-content>
 </mat-card>

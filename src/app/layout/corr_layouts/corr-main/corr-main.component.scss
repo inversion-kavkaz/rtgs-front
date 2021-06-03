@@ -1,6 +1,6 @@
 .table-container {
   position: relative;
-  max-height: 75vh;
+  max-height: 60vh;
   overflow: auto;
 }
 table{
@@ -12,6 +12,9 @@ tr.mat-row:hover {
 }
 //Это шапка таблицы
 ::ng-deep .mat-sort-header-container {
+}
+::ng-deep .mat-card{
+padding-top: 0 !important;
 }
 
 th.mat-column-position, td.mat-column-position {

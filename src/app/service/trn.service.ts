@@ -47,13 +47,14 @@ export class TrnService {
     })
   }
 
-  getFilteringTrn(filter: Filter, pageNum: number, pageSize: number): Observable<any>{
+  getFilteringTrn(filter: Filter, pageNum: number, pageSize: number, sort: string): Observable<any>{
     return this.http.post(TRN_URL_FILTER,
       {
         filter : filter,
         login : this.currentLogin,
         pageNum : pageNum,
-        pageSize : pageSize
+        pageSize : pageSize,
+        sort: sort
     })
   }
 

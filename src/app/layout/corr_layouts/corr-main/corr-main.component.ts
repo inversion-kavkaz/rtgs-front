@@ -1,8 +1,8 @@
-import {AfterViewInit, Component, ElementRef, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, HostListener, OnInit, ViewChild} from '@angular/core';
 import {Bank} from "../../../model/bank";
 import {User} from "../../../model/user";
 import {Trn} from "../../../model/trn";
-import {MatRow, MatTableDataSource} from "@angular/material/table";
+import {MatTableDataSource} from "@angular/material/table";
 import {SelectionModel} from "@angular/cdk/collections";
 import {AuthService} from "../../../service/auth.service";
 import {TokenStorageService} from "../../../service/token-storage.service";
@@ -11,24 +11,24 @@ import {Router} from "@angular/router";
 import {TrnService} from "../../../service/trn.service";
 import {MatDialog, MatDialogConfig} from "@angular/material/dialog";
 import {ViewTrnComponent} from "../../client_layouts/view-trn/view-trn.component";
-import {Sort} from "@angular/material/sort";
+import {MatSort, Sort} from "@angular/material/sort";
 import {compare} from "../../../utils/utils";
 import {Filter} from "../../../model/filter";
 import {BalanceService} from "../../../service/balance.service";
 import {Balance} from "../../../model/balance";
-import {filter} from "rxjs/operators";
 import {FilterLayoutComponent} from "../../filter-layout/filter-layout.component";
-import {RepoprtComponent} from "../../repoprt/repoprt.component";
+import {MatPaginator, PageEvent} from "@angular/material/paginator";
+import {merge} from "rxjs";
+import {map, startWith, switchMap} from "rxjs/operators";
 
 @Component({
   selector: 'app-corr-main',
   templateUrl: './corr-main.component.html',
   styleUrls: ['./corr-main.component.scss']
 })
-export class CorrMainComponent implements OnInit {
+export class CorrMainComponent implements OnInit, AfterViewInit {
   currentBank: Bank
   currentUser: User
-  currentTransactions: Trn[] = []
   buttonVisible: boolean = false
 
   displayedColumns: string[] = ['select', 'status', 'position', 'edNo', 'edDate', 'payeePersonalAcc'
@@ -40,16 +40,26 @@ export class CorrMainComponent implements OnInit {
   filterData: any = {}
   isLoading = true
   balance: Balance = {
-    real_balance : 0,
-    planned_balance : 0,
-    payment_position : 0
+    real_balance: 0,
+    planned_balance: 0,
+    payment_position: 0
   }
+
   pageNum = 0
   pageSize = 50
+  resultsLength: any = 100;
+
   links = ['Output documents', 'Input documents'];
   activeLink = this.links[0];
 
-  @ViewChild("rowItem", {read: ElementRef,static: false}) private myIdentifier?: ElementRef
+  isCtrl: boolean = false
+  sortList: string[] = []
+  currentSortActive = ""
+
+  @ViewChild(MatSort) sort?: MatSort;
+  @ViewChild(MatPaginator) paginator?: MatPaginator;
+  private isLoadingResults?: boolean;
+
 
   constructor(
     private authService: AuthService,
@@ -67,9 +77,44 @@ export class CorrMainComponent implements OnInit {
     })
 
     this.initFilter()
-    this.loadTrans()
+    this.initSorted()
+    //this.loadTrans()
     this.initBalance()
 
+  }
+
+  ngAfterViewInit() {
+    // @ts-ignore
+    this.sort.sortChange.subscribe(() => this.paginator.pageIndex = 0);
+
+    // @ts-ignore
+    merge(this.sort.sortChange, this.paginator.page)
+      .pipe(
+        startWith({}),
+        switchMap(() => {
+          this.isLoading = true
+          return  this.trnService.getFilteringTrn(this.filterData as Filter, this.pageNum, this.pageSize, this.sortList.toString())
+        }),
+        map(data => {
+
+          console.log(data)
+          this.isLoading = false;
+
+          if (data === null) {
+            return [];
+          }
+          this.resultsLength = data.total_count;
+          return data.items;
+        })
+      ).subscribe(data => {
+      this.dataSource.data = data.trnList as Trn[]
+      this.resultsLength = data.loadLength
+    });
+  }
+
+
+  initSorted(){
+    this.sortList.push("edDate desc")
   }
 
   initBalance() {
@@ -79,9 +124,9 @@ export class CorrMainComponent implements OnInit {
       acc: this.filterData.payerCorrespAcc
     }
     this.balanceServise.getBalance(balDate).subscribe(res => {
-      this.balance.real_balance = +res.real_balance.toString().replace(",",".")
-      this.balance.planned_balance = +res.planned_balance.toString().replace(",",".")
-      this.balance.payment_position = +res.payment_position.toString().replace(",",".")
+      this.balance.real_balance = +res.real_balance.toString().replace(",", ".")
+      this.balance.planned_balance = +res.planned_balance.toString().replace(",", ".")
+      this.balance.payment_position = +res.payment_position.toString().replace(",", ".")
     }, error => {
       this.notificationService.showSnackBar("Balance loading error")
     })
@@ -94,29 +139,22 @@ export class CorrMainComponent implements OnInit {
   }
 
   loadTrans() {
+    let ss = this.sortList.toString()
+    console.log(ss)
     this.isLoading = true
-    this.trnService.getFilteringTrn(this.filterData as Filter, this.pageNum, this.pageSize).subscribe(data => {
-      this.currentTransactions = data as Trn[]
-      this.dataSource.data = this.currentTransactions
-
-      /**Временно убрал возможно понадобится для постраничной загрузки*/
-      // this.currentTransactions.forEach(t => {
-      //   this.dataSource.data.push(t)
-      // })
-      /**------------------------------------------------------------*/
-
+    this.trnService.getFilteringTrn(this.filterData as Filter, this.pageNum, this.pageSize, ss).subscribe(data => {
+      this.dataSource.data = data.trnList as Trn[]
+      this.resultsLength = data.loadLength
     }, error => {
       this.notificationService.showSnackBar(error.message || error.statusText);
     }, () => {
       this.isLoading = false
+      this.sortList.splice(0,this.sortList.length)
+      console.log('after clear ' + this.sortList.toString())
     })
   }
 
   ngOnInit(): void {
-  }
-
-  logout() {
-    this.tokenStorage.logOut()
   }
 
   applyFilter(event: Event) {
@@ -128,7 +166,7 @@ export class CorrMainComponent implements OnInit {
     const viewDialogTransaction = new MatDialogConfig();
     viewDialogTransaction.width = '80%';
     viewDialogTransaction.height = '80%';
-    const currentTrn = this.currentTransactions.find(u => u.itrnnum == row.itrnnum)
+    const currentTrn = this.dataSource.data.find(u => u.itrnnum == row.itrnnum)
     viewDialogTransaction.data = {
       trn: currentTrn
     };
@@ -161,52 +199,74 @@ export class CorrMainComponent implements OnInit {
   }
 
   clickTrnRow(i: any) {
-    if (this.selection.isSelected(this.currentTransactions[i]))
-      this.selection.deselect(this.currentTransactions[i])
+    if (this.selection.isSelected(this.dataSource.data[i]))
+      this.selection.deselect(this.dataSource.data[i])
     else
-      this.selection.select(this.currentTransactions[i])
+      this.selection.select(this.dataSource.data[i])
   }
 
+  @HostListener('window:keydown', ['$event'])
+  keyEventDown(event: KeyboardEvent) {
+    this.isCtrl = event.ctrlKey
+  }
+
+  @HostListener('window:keyup', ['$event'])
+  keyEventUp(event: KeyboardEvent) {
+    this.isCtrl = event.ctrlKey
+    if(this.sortList.length > 0)
+      this.loadTrans()
+  }
+
+
   sortChanged(sort: Sort) {
+
     if (!sort.active || sort.direction === '') {
       return;
     }
 
+    let newStr = `${sort.active} ${sort.direction}`
+    let index = this.sortList.findIndex(s => s.substring(0,s.search(" ")) === newStr.substring(0,newStr.search(" ")))
+    if(index != -1)
+      this.sortList.splice(index,1)
+    this.sortList.push(newStr)
+      if(!this.isCtrl)
+        this.loadTrans()
 
-    this.dataSource.data = this.dataSource.data.sort((a, b) => {
-      const isAsc = sort.direction === 'asc';
-      switch (sort.active) {
 
-        case 'status'   :
-          return compare(a.status, b.status, isAsc);
-        case 'position' :
-          return compare(a.position, b.position, isAsc);
-        case 'edNo'     :
-          return compare(a.edNo, b.edNo, isAsc);
-        case 'edDate'   :
-          return compare(a.edDate.getDate(), b.edDate.getDate(), isAsc);
-        case 'payeePersonalAcc' :
-          return compare(a.payeePersonalAcc, b.payeePersonalAcc, isAsc);
-        case 'payerPersonalAcc' :
-          return compare(a.payerPersonalAcc, b.payerPersonalAcc, isAsc);
-        case 'sum' :
-          return compare(a.sum, b.sum, isAsc);
-        case 'currency' :
-          return compare(a.currency, b.currency, isAsc);
-        case 'payeeINN' :
-          return compare(a.payeeINN, b.payeeINN, isAsc);
-        case 'payeeName' :
-          return compare(a.payeeName, b.payeeName, isAsc);
-        case 'payerINN' :
-          return compare(a.payerINN, b.payerINN, isAsc);
-        case 'payerName' :
-          return compare(a.payerName, b.payerName, isAsc);
-        case 'purpose' :
-          return compare(a.purpose, b.purpose, isAsc);
-        default:
-          return 0;
-      }
-    });
+    // this.dataSource.data = this.dataSource.data.sort((a, b) => {
+    //   const isAsc = sort.direction === 'asc';
+    //   switch (sort.active) {
+    //
+    //     case 'status'   :
+    //       return compare(a.status, b.status, isAsc);
+    //     case 'position' :
+    //       return compare(a.position, b.position, isAsc);
+    //     case 'edNo'     :
+    //       return compare(a.edNo, b.edNo, isAsc);
+    //     case 'edDate'   :
+    //       return compare(a.edDate.toTimeString(), b.edDate.toTimeString(), isAsc);
+    //     case 'payeePersonalAcc' :
+    //       return compare(a.payeePersonalAcc, b.payeePersonalAcc, isAsc);
+    //     case 'payerPersonalAcc' :
+    //       return compare(a.payerPersonalAcc, b.payerPersonalAcc, isAsc);
+    //     case 'sum' :
+    //       return compare(a.sum, b.sum, isAsc);
+    //     case 'currency' :
+    //       return compare(a.currency, b.currency, isAsc);
+    //     case 'payeeINN' :
+    //       return compare(a.payeeINN, b.payeeINN, isAsc);
+    //     case 'payeeName' :
+    //       return compare(a.payeeName, b.payeeName, isAsc);
+    //     case 'payerINN' :
+    //       return compare(a.payerINN, b.payerINN, isAsc);
+    //     case 'payerName' :
+    //       return compare(a.payerName, b.payerName, isAsc);
+    //     case 'purpose' :
+    //       return compare(a.purpose, b.purpose, isAsc);
+    //     default:
+    //       return 0;
+    //   }
+    // });
 
   }
 
@@ -224,7 +284,7 @@ export class CorrMainComponent implements OnInit {
     viewDialogFilter.height = '50%';
     viewDialogFilter.data = {filter: this.filterData};
     this.dialog.open(FilterLayoutComponent, viewDialogFilter).afterClosed().subscribe(res => {
-      if(res === 1) {
+      if (res === 1) {
         this.loadTrans()
       }
     })
@@ -260,32 +320,13 @@ export class CorrMainComponent implements OnInit {
     this.initBalance()
   }
 
-  scroll(event: Event) {
-
-
-    // let tableDivHeight = this.myIdentifier?.nativeElement.clientHeight
-    // // @ts-ignore
-    // let scrollDif = tableDivHeight - event.target.scrollTop
-    //
-    // console.log('tableDivHeight = ' + tableDivHeight)
-    // console.log('scrollDif = ' + scrollDif)
-    //
-    //
-    // if(scrollDif < tableDivHeight / 3 && !this.isLoading){
-    //   console.log("load next page");
-    //   this.pageNum += 1
-    //   this.loadTrans()
-    // }
-  }
-
-  onSelectTab(tabNum: number) {
+    onSelectTab(tabNum: number) {
     console.log(tabNum)
-    if(tabNum === 1) {
+    if (tabNum === 1) {
       this.filterData.payeeCorrespAcc = this.currentBank.corrAcc
       this.filterData.payerCorrespAcc = null
       this.filterData.status = 4
-    }
-    else {
+    } else {
       this.filterData.payerCorrespAcc = this.currentBank.corrAcc
       this.filterData.payeeCorrespAcc = null
       this.filterData.status = null
@@ -295,12 +336,14 @@ export class CorrMainComponent implements OnInit {
 
   openReportDialog() {
 
-    window.location.href= "http://172.16.0.146:1216/download"
-    //document.location = "http://172.16.0.146:1216/download"
-    // const reportDialog = new MatDialogConfig();
-    // reportDialog.width = '80%';
-    // reportDialog.height = '80%';
-    //
-    // this.dialog.open(RepoprtComponent,reportDialog)
+    window.location.href = "http://172.16.0.146:1216/download"
+
+  }
+
+  getServerData(event: PageEvent) {
+    console.log(event)
+    this.pageNum = event.pageIndex
+    this.pageSize = event.pageSize
+    this.loadTrans()
   }
 }

@@ -11,3 +11,22 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 .mat-form-field-appearance-outline.mat-form-field-can-float.mat-form-field-should-float .mat-form-field-outline-gap {
   border-top-color: currentColor !important;
 }
+
+body{
+    //background:url('../src/assets/images/investicionnogo-banka.jpg') no-repeat center center;
+    //background-size:cover;
+//  background-color: darkgrey;
+  }
+
+.loading-shade {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0px;
+  right: 0;
+  background: rgba(0, 0, 0, 0.15);
+  z-index: 999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

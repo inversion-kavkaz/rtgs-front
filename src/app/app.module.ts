@@ -33,6 +33,7 @@ import {MatTabsModule} from "@angular/material/tabs";
 import { FilterLayoutComponent } from './layout/filter-layout/filter-layout.component';
 import {PdfViewerModule} from "ng2-pdf-viewer";
 import { RepoprtComponent } from './layout/repoprt/repoprt.component';
+import {MatPaginatorModule} from "@angular/material/paginator";
 
 @NgModule({
   declarations: [
@@ -69,7 +70,8 @@ import { RepoprtComponent } from './layout/repoprt/repoprt.component';
     MatProgressSpinnerModule,
     MatListModule,
     MatTabsModule,
-    PdfViewerModule
+    PdfViewerModule,
+    MatPaginatorModule
   ],
   providers: [authInterceptorProviders, authErrorInterceptorProviders, MatNativeDateModule, MatNativeDateModule ],
   bootstrap: [AppComponent]

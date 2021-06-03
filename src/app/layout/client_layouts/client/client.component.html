@@ -1,23 +1,5 @@
 <mat-card  (mousemove)="move()">
 
-
-  <mat-grid-list cols="10" rowHeight="10:2">
-    <mat-grid-tile>
-<!--      <mat-slide-toggle [(ngModel)]="isChecked" (change)="onChange()">Only today</mat-slide-toggle>-->
-    </mat-grid-tile>
-    <mat-grid-tile colspan="8"></mat-grid-tile>
-    <mat-grid-tile>
-      <button matTooltip="Profile" mat-icon-button  (click)="logout()">
-        <mat-icon color="accent" >logout</mat-icon>
-        logout
-      </button>
-    </mat-grid-tile>
-  </mat-grid-list>
-
-<!--  <mat-card-title style="margin-top: 1em">-->
-<!--    <button mat-stroked-button style="margin-left: 0.5em" (click)="addTransaction('Create')">Filter<mat-icon>filter_list</mat-icon></button>-->
-<!--  </mat-card-title>-->
-
   <mat-grid-list cols="18" rowHeight="50" style="border-bottom: 1px darkcyan solid;margin-top: 1em;border-top: 1px darkcyan solid">
     <mat-grid-tile [colspan]="5" >
       <mat-form-field style=" width: 80%">

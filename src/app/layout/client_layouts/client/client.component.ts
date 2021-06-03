@@ -75,10 +75,6 @@ export class ClientComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  logout() {
-    this.tokenStorage.logOut()
-  }
-
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource.filter = filterValue.trim().toLowerCase();
@@ -251,9 +247,6 @@ export class ClientComponent implements OnInit {
 
   }
 
-  onChange() {
-    console.log('check date')
-  }
 }
 
 
