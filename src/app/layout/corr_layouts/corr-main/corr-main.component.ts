@@ -2,7 +2,6 @@ import {AfterViewInit, Component, HostListener, OnInit, ViewChild} from '@angula
 import {Bank} from "../../../model/bank";
 import {User} from "../../../model/user";
 import {Trn} from "../../../model/trn";
-import {MatTableDataSource} from "@angular/material/table";
 import {SelectionModel} from "@angular/cdk/collections";
 import {AuthService} from "../../../service/auth.service";
 import {TokenStorageService} from "../../../service/token-storage.service";
@@ -11,15 +10,15 @@ import {Router} from "@angular/router";
 import {TrnService} from "../../../service/trn.service";
 import {MatDialog, MatDialogConfig} from "@angular/material/dialog";
 import {ViewTrnComponent} from "../../client_layouts/view-trn/view-trn.component";
-import {MatSort, Sort} from "@angular/material/sort";
-import {compare} from "../../../utils/utils";
 import {Filter} from "../../../model/filter";
 import {BalanceService} from "../../../service/balance.service";
 import {Balance} from "../../../model/balance";
 import {FilterLayoutComponent} from "../../filter-layout/filter-layout.component";
-import {MatPaginator, PageEvent} from "@angular/material/paginator";
 import {merge} from "rxjs";
 import {map, startWith, switchMap} from "rxjs/operators";
+import {MatTableDataSource} from "@angular/material/table";
+import {MatSort, MatSortable} from "@angular/material/sort";
+import {MatPaginator, PageEvent} from "@angular/material/paginator";
 
 @Component({
   selector: 'app-corr-main',
@@ -34,7 +33,7 @@ export class CorrMainComponent implements OnInit, AfterViewInit {
   displayedColumns: string[] = ['select', 'status', 'position', 'edNo', 'edDate', 'payeePersonalAcc'
     , 'payerPersonalAcc', 'sum', 'currency', 'payeeINN', 'payeeName', 'payerINN', 'payerName'
     , 'purpose']
-  dataSource: MatTableDataSource<Trn> = new MatTableDataSource()
+  dataSource: MatTableDataSource<any> = new MatTableDataSource()
   selection = new SelectionModel<Trn>(true, []);
   lastMove: number = new Date().getMinutes()
   filterData: any = {}
@@ -47,7 +46,7 @@ export class CorrMainComponent implements OnInit, AfterViewInit {
 
   pageNum = 0
   pageSize = 50
-  resultsLength: any = 100;
+  resultsLength: any = 0;
 
   links = ['Output documents', 'Input documents'];
   activeLink = this.links[0];
@@ -56,10 +55,8 @@ export class CorrMainComponent implements OnInit, AfterViewInit {
   sortList: string[] = []
   currentSortActive = ""
 
-  @ViewChild(MatSort) sort?: MatSort;
-  @ViewChild(MatPaginator) paginator?: MatPaginator;
-  private isLoadingResults?: boolean;
-
+  @ViewChild(MatPaginator, {read : MatPaginator , static: false}) paginator?: MatPaginator;
+  @ViewChild(MatSort,  {read : MatSort , static: false}) sort?: MatSort;
 
   constructor(
     private authService: AuthService,
@@ -84,37 +81,46 @@ export class CorrMainComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
+
+
     // @ts-ignore
-    this.sort.sortChange.subscribe(() => this.paginator.pageIndex = 0);
+    this.sort?.sortChange.subscribe(() => this.paginator.pageIndex = 0);
 
     // @ts-ignore
     merge(this.sort.sortChange, this.paginator.page)
       .pipe(
         startWith({}),
         switchMap(() => {
+          if(this.sort?.active != 'created')
+            this.sortList.push(`${this.sort?.active} ${this.sort?.direction}`)
+
           this.isLoading = true
-          return  this.trnService.getFilteringTrn(this.filterData as Filter, this.pageNum, this.pageSize, this.sortList.toString())
+          // @ts-ignore
+          return this.trnService.getFilteringTrn(this.filterData as Filter, this.paginator.pageIndex, this.paginator.pageSize, this.sortList.toString())
         }),
         map(data => {
-
-          console.log(data)
           this.isLoading = false;
+          this.sortList.splice(0, this.sortList.length)
+          console.log('clear filter')
+          console.log(this.sortList.length)
 
           if (data === null) {
             return [];
           }
-          this.resultsLength = data.total_count;
-          return data.items;
+
+          return data;
         })
       ).subscribe(data => {
-      this.dataSource.data = data.trnList as Trn[]
+      this.dataSource.data = data.trnList
       this.resultsLength = data.loadLength
+    }, error => {},
+    () =>{
     });
   }
 
 
-  initSorted(){
-    this.sortList.push("edDate desc")
+  initSorted() {
+    //this.sortList.push("edDate desc")
   }
 
   initBalance() {
@@ -138,23 +144,25 @@ export class CorrMainComponent implements OnInit, AfterViewInit {
     this.filterData.payerCorrespAcc = this.currentBank.corrAcc
   }
 
-  loadTrans() {
-    let ss = this.sortList.toString()
-    console.log(ss)
-    this.isLoading = true
-    this.trnService.getFilteringTrn(this.filterData as Filter, this.pageNum, this.pageSize, ss).subscribe(data => {
-      this.dataSource.data = data.trnList as Trn[]
-      this.resultsLength = data.loadLength
-    }, error => {
-      this.notificationService.showSnackBar(error.message || error.statusText);
-    }, () => {
-      this.isLoading = false
-      this.sortList.splice(0,this.sortList.length)
-      console.log('after clear ' + this.sortList.toString())
-    })
-  }
+  // loadTrans() {
+  //   let ss = this.sortList.toString()
+  //   console.log(ss)
+  //   this.isLoading = true
+  //   this.trnService.getFilteringTrn(this.filterData as Filter, this.pageNum, this.pageSize, ss).subscribe(data => {
+  //     this.dataSource.data = data.trnList as Trn[]
+  //     this.resultsLength = data.loadLength
+  //   }, error => {
+  //     this.notificationService.showSnackBar(error.message || error.statusText);
+  //   }, () => {
+  //     this.isLoading = false
+  //     this.sortList.splice(0, this.sortList.length)
+  //     console.log('after clear ' + this.sortList.toString())
+  //   })
+  // }
 
   ngOnInit(): void {
+    this.dataSource.sort = this.sort as MatSort
+    this.dataSource.paginator = this.paginator as MatPaginator
   }
 
   applyFilter(event: Event) {
@@ -170,11 +178,7 @@ export class CorrMainComponent implements OnInit, AfterViewInit {
     viewDialogTransaction.data = {
       trn: currentTrn
     };
-    this.dialog.open(ViewTrnComponent, viewDialogTransaction).afterClosed()
-      .subscribe(result => {
-        if (result != undefined && result.res != 0)
-          this.loadTrans()
-      });
+    this.dialog.open(ViewTrnComponent, viewDialogTransaction)
   }
 
   isAllSelected() {
@@ -213,62 +217,54 @@ export class CorrMainComponent implements OnInit, AfterViewInit {
   @HostListener('window:keyup', ['$event'])
   keyEventUp(event: KeyboardEvent) {
     this.isCtrl = event.ctrlKey
-    if(this.sortList.length > 0)
-      this.loadTrans()
+    // if (this.sortList.length > 0)
+    //   this.loadTrans()
   }
 
 
-  sortChanged(sort: Sort) {
-
-    if (!sort.active || sort.direction === '') {
-      return;
-    }
-
-    let newStr = `${sort.active} ${sort.direction}`
-    let index = this.sortList.findIndex(s => s.substring(0,s.search(" ")) === newStr.substring(0,newStr.search(" ")))
-    if(index != -1)
-      this.sortList.splice(index,1)
-    this.sortList.push(newStr)
-      if(!this.isCtrl)
-        this.loadTrans()
-
-
-    // this.dataSource.data = this.dataSource.data.sort((a, b) => {
-    //   const isAsc = sort.direction === 'asc';
-    //   switch (sort.active) {
-    //
-    //     case 'status'   :
-    //       return compare(a.status, b.status, isAsc);
-    //     case 'position' :
-    //       return compare(a.position, b.position, isAsc);
-    //     case 'edNo'     :
-    //       return compare(a.edNo, b.edNo, isAsc);
-    //     case 'edDate'   :
-    //       return compare(a.edDate.toTimeString(), b.edDate.toTimeString(), isAsc);
-    //     case 'payeePersonalAcc' :
-    //       return compare(a.payeePersonalAcc, b.payeePersonalAcc, isAsc);
-    //     case 'payerPersonalAcc' :
-    //       return compare(a.payerPersonalAcc, b.payerPersonalAcc, isAsc);
-    //     case 'sum' :
-    //       return compare(a.sum, b.sum, isAsc);
-    //     case 'currency' :
-    //       return compare(a.currency, b.currency, isAsc);
-    //     case 'payeeINN' :
-    //       return compare(a.payeeINN, b.payeeINN, isAsc);
-    //     case 'payeeName' :
-    //       return compare(a.payeeName, b.payeeName, isAsc);
-    //     case 'payerINN' :
-    //       return compare(a.payerINN, b.payerINN, isAsc);
-    //     case 'payerName' :
-    //       return compare(a.payerName, b.payerName, isAsc);
-    //     case 'purpose' :
-    //       return compare(a.purpose, b.purpose, isAsc);
-    //     default:
-    //       return 0;
-    //   }
-    // });
-
-  }
+  // sortChanged(sort: Sort) {
+  //
+  //   if (!sort.active || sort.direction === '') {
+  //     return;
+  //   }
+  //
+  //   // this.dataSource.data = this.dataSource.data.sort((a, b) => {
+  //   //   const isAsc = sort.direction === 'asc';
+  //   //   switch (sort.active) {
+  //   //
+  //   //     case 'status'   :
+  //   //       return compare(a.status, b.status, isAsc);
+  //   //     case 'position' :
+  //   //       return compare(a.position, b.position, isAsc);
+  //   //     case 'edNo'     :
+  //   //       return compare(a.edNo, b.edNo, isAsc);
+  //   //     case 'edDate'   :
+  //   //       return compare(a.edDate.toTimeString(), b.edDate.toTimeString(), isAsc);
+  //   //     case 'payeePersonalAcc' :
+  //   //       return compare(a.payeePersonalAcc, b.payeePersonalAcc, isAsc);
+  //   //     case 'payerPersonalAcc' :
+  //   //       return compare(a.payerPersonalAcc, b.payerPersonalAcc, isAsc);
+  //   //     case 'sum' :
+  //   //       return compare(a.sum, b.sum, isAsc);
+  //   //     case 'currency' :
+  //   //       return compare(a.currency, b.currency, isAsc);
+  //   //     case 'payeeINN' :
+  //   //       return compare(a.payeeINN, b.payeeINN, isAsc);
+  //   //     case 'payeeName' :
+  //   //       return compare(a.payeeName, b.payeeName, isAsc);
+  //   //     case 'payerINN' :
+  //   //       return compare(a.payerINN, b.payerINN, isAsc);
+  //   //     case 'payerName' :
+  //   //       return compare(a.payerName, b.payerName, isAsc);
+  //   //     case 'purpose' :
+  //   //       return compare(a.purpose, b.purpose, isAsc);
+  //   //     default:
+  //   //       return 0;
+  //   //   }
+  //   // });
+  //
+  // }
+  //
 
   move() {
     let nowMonent = new Date().getMinutes()
@@ -285,7 +281,7 @@ export class CorrMainComponent implements OnInit, AfterViewInit {
     viewDialogFilter.data = {filter: this.filterData};
     this.dialog.open(FilterLayoutComponent, viewDialogFilter).afterClosed().subscribe(res => {
       if (res === 1) {
-        this.loadTrans()
+        this.sort?.sortChange.next()
       }
     })
   }
@@ -316,11 +312,11 @@ export class CorrMainComponent implements OnInit, AfterViewInit {
   accChanged(event: any) {
     let currentAcc = (event.target as HTMLSelectElement).value;
     this.filterData.payerCorrespAcc = currentAcc
-    this.loadTrans()
+    this.sort?.sortChange.next()
     this.initBalance()
   }
 
-    onSelectTab(tabNum: number) {
+  onSelectTab(tabNum: number) {
     console.log(tabNum)
     if (tabNum === 1) {
       this.filterData.payeeCorrespAcc = this.currentBank.corrAcc
@@ -331,7 +327,7 @@ export class CorrMainComponent implements OnInit, AfterViewInit {
       this.filterData.payeeCorrespAcc = null
       this.filterData.status = null
     }
-    this.loadTrans()
+    this.sort?.sortChange.next()
   }
 
   openReportDialog() {
@@ -340,10 +336,10 @@ export class CorrMainComponent implements OnInit, AfterViewInit {
 
   }
 
-  getServerData(event: PageEvent) {
-    console.log(event)
-    this.pageNum = event.pageIndex
-    this.pageSize = event.pageSize
-    this.loadTrans()
-  }
+  // getServerData(event: PageEvent) {
+  //   console.log(event)
+  //   this.pageNum = event.pageIndex
+  //   this.pageSize = event.pageSize
+  //   //this.loadTrans()
+  // }
 }
