@@ -87,40 +87,35 @@ export class CorrMainComponent implements OnInit, AfterViewInit {
     this.sort?.sortChange.subscribe(() => this.paginator.pageIndex = 0);
 
     // @ts-ignore
-    merge(this.sort.sortChange, this.paginator.page)
+    merge<MatSort,MatPaginator>(this.sort.sortChange, this.paginator.page)
       .pipe(
         startWith({}),
         switchMap(() => {
+          this.isLoading = true
           if(this.sort?.active != 'created')
             this.sortList.push(`${this.sort?.active} ${this.sort?.direction}`)
-
-          this.isLoading = true
           // @ts-ignore
           return this.trnService.getFilteringTrn(this.filterData as Filter, this.paginator.pageIndex, this.paginator.pageSize, this.sortList.toString())
         }),
         map(data => {
           this.isLoading = false;
           this.sortList.splice(0, this.sortList.length)
-          console.log('clear filter')
-          console.log(this.sortList.length)
-
-          if (data === null) {
-            return [];
-          }
-
+          if (data === null) return []
           return data;
         })
       ).subscribe(data => {
       this.dataSource.data = data.trnList
       this.resultsLength = data.loadLength
-    }, error => {},
+    }, error => {
+        this.notificationService.showSnackBar(error.message || error.statusText);
+      },
     () =>{
     });
   }
 
 
   initSorted() {
-    //this.sortList.push("edDate desc")
+    this.sortList.push("edDate desc")
   }
 
   initBalance() {
@@ -143,22 +138,6 @@ export class CorrMainComponent implements OnInit, AfterViewInit {
     this.filterData.endDate = null //new Date()
     this.filterData.payerCorrespAcc = this.currentBank.corrAcc
   }
-
-  // loadTrans() {
-  //   let ss = this.sortList.toString()
-  //   console.log(ss)
-  //   this.isLoading = true
-  //   this.trnService.getFilteringTrn(this.filterData as Filter, this.pageNum, this.pageSize, ss).subscribe(data => {
-  //     this.dataSource.data = data.trnList as Trn[]
-  //     this.resultsLength = data.loadLength
-  //   }, error => {
-  //     this.notificationService.showSnackBar(error.message || error.statusText);
-  //   }, () => {
-  //     this.isLoading = false
-  //     this.sortList.splice(0, this.sortList.length)
-  //     console.log('after clear ' + this.sortList.toString())
-  //   })
-  // }
 
   ngOnInit(): void {
     this.dataSource.sort = this.sort as MatSort
