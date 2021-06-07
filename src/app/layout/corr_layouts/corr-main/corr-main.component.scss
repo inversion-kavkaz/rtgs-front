@@ -1,4 +1,5 @@
 .table-container {
+  display: flex;
   position: relative;
   max-height: 65vh;
   overflow: auto;
@@ -16,6 +17,11 @@ tr.mat-row:hover {
 ::ng-deep .mat-card{
 padding-top: 0 !important;
 }
+//.my_chips{
+//  &::ng-deep .mat-grid-tile-content{
+//    justify-content: right;
+//  }
+//}
 
 th.mat-column-position, td.mat-column-position {
   padding-left: 1em;
@@ -28,6 +34,7 @@ th.mat-column-position, td.mat-column-position {
 .mat-header-cell{
   padding: 0 0.5em 0 0.5em;
 }
+
 //.mat-grid-tile{
 //  border: 1px red solid;
 //}

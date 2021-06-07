@@ -1,7 +1,9 @@
 
-<mat-grid-list cols="24" rowHeight="10:5" style="background-color: #336633;">
+<mat-grid-list cols="24" rowHeight="10:5" class="header" >
   <mat-grid-tile colspan="1" >
-      <img src="../assets/images/sar_flag.jpg" style="width: 4em; height: 2.2em;">
+    <div class="w-100">
+      <img src="../assets/images/sar_flag.jpg" style="width: 4em; height: 2.5em;">
+    </div>
   </mat-grid-tile>
   <mat-grid-tile colspan="21">
       <h2 style="color: white;margin-top: 0.7em">RTGS</h2>
@@ -14,12 +16,10 @@
   </mat-grid-tile>
 </mat-grid-list>
 
-<div style="margin: 2em 0 0 0">
+<div class="content" >
   <router-outlet></router-outlet>
 </div>
 
-<footer>
-  <div style="background-color: #336633;color: white;text-align: right ">
+<footer class="footer" >
     <h5 style="margin: 0 2em 0 0">© Inversion</h5>
-  </div>
 </footer>

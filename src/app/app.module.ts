@@ -25,6 +25,7 @@ import {FilterLayoutComponent} from './layout/filter-layout/filter-layout.compon
 import {PdfViewerModule} from "ng2-pdf-viewer";
 import {RepoprtComponent} from './layout/repoprt/repoprt.component';
 import {MaterialModule} from "./material-module";
+import {MatChipsModule} from "@angular/material/chips";
 
 @NgModule({
   declarations: [
@@ -53,6 +54,7 @@ import {MaterialModule} from "./material-module";
     NgxCurrencyModule,
     FormsModule,
     PdfViewerModule,
+    MatChipsModule,
   ],
   providers: [authInterceptorProviders, authErrorInterceptorProviders, MatNativeDateModule],
   bootstrap: [AppComponent]

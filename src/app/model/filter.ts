@@ -1,15 +1,15 @@
 export interface Filter {
-  startDate: Date
-  endDate: Date
-  login: string
-  sum: number
-  payerPersonalAcc: string
-  payerCorrespAcc: string
-  payeePersonalAcc: string
-  payeeCorrespAcc: string
-  purpose: string
-  payerName: string
-  payeeName: string
-  currency : string
-  status : number
+  startDate: Date | null
+  endDate: Date | null
+  login: string | null
+  sum: number | null
+  payerPersonalAcc: string | null
+  payerCorrespAcc: string | null
+  payeePersonalAcc: string | null
+  payeeCorrespAcc: string | null
+  purpose: string | null
+  payerName: string | null
+  payeeName: string | null
+  currency : string | null
+  status : number | null
 }

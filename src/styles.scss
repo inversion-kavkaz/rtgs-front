@@ -1,7 +1,15 @@
-/* You can add global styles to this file, and also import other style files */
+$header_footre_backgroun_color: #336666;
+//$header_footre_backgroun_color: #339999;
+//$header_footre_backgroun_color: #336699;
+//$header_footre_backgroun_color: #006633;
+
+
 
 html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
 
 .mat-form-field-appearance-outline.mat-form-field-can-float.mat-form-field-should-float .mat-form-field-label, .mat-form-field-appearance-outline.mat-form-field-can-float .mat-input-server:focus + .mat-form-field-label-wrapper .mat-form-field-label {
   transform: translateY(-0.8em) scale(0.75);
@@ -12,11 +20,11 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   border-top-color: currentColor !important;
 }
 
-body{
-    //background:url('../src/assets/images/investicionnogo-banka.jpg') no-repeat center center;
-    //background-size:cover;
-//  background-color: darkgrey;
-  }
+//body{
+//    background:url('../src/assets/images/www.jpg') no-repeat center center;
+//    background-size:cover;
+//    background-color: darkgrey;
+//  }
 
 .loading-shade {
   position: absolute;
@@ -29,4 +37,22 @@ body{
   display: flex;
   align-items: center;
   justify-content: center;
+
 }
+
+.header{
+  background-color: $header_footre_backgroun_color;
+  color: white;
+}
+.content{
+  margin: 2em 1em 0 1em;
+}
+.footer{
+  background-color: $header_footre_backgroun_color;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  color: white;
+  text-align: right
+}
+//background-color: #336633;color: white;text-align: right
