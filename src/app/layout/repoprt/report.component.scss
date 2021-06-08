@@ -1,0 +1,15 @@
+.table-container {
+  display: flex;
+  position: relative;
+  max-height: 65vh;
+  overflow: auto;
+}
+
+tr.mat-row:hover {
+  cursor: pointer;
+  background-color: whitesmoke;
+}
+
+.mat-cell{
+  padding: 0 0.5em 0 0.5em;
+}

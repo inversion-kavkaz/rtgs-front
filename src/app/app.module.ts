@@ -23,7 +23,7 @@ import {CtrlMainComponent} from './layout/ctrl_layouts/ctrl-main/ctrl-main.compo
 import {SpacePipe} from './utils/space.pipe';
 import {FilterLayoutComponent} from './layout/filter-layout/filter-layout.component';
 import {PdfViewerModule} from "ng2-pdf-viewer";
-import {RepoprtComponent} from './layout/repoprt/repoprt.component';
+import {ReportComponent} from './layout/repoprt/report.component';
 import {MaterialModule} from "./material-module";
 import {MatChipsModule} from "@angular/material/chips";
 
@@ -42,7 +42,7 @@ import {MatChipsModule} from "@angular/material/chips";
     CtrlMainComponent,
     SpacePipe,
     FilterLayoutComponent,
-    RepoprtComponent,
+    ReportComponent,
   ],
   imports: [
     BrowserModule,

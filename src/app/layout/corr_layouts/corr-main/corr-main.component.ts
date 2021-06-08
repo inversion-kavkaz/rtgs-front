@@ -19,6 +19,7 @@ import {map, startWith, switchMap} from "rxjs/operators";
 import {MatTableDataSource} from "@angular/material/table";
 import {MatSort, MatSortable, Sort} from "@angular/material/sort";
 import {MatPaginator, PageEvent} from "@angular/material/paginator";
+import {ReportComponent} from "../../repoprt/report.component";
 
 @Component({
   selector: 'app-corr-main',
@@ -36,21 +37,21 @@ export class CorrMainComponent implements OnInit, AfterViewInit {
   dataSource: MatTableDataSource<any> = new MatTableDataSource()
   selection = new SelectionModel<Trn>(true, []);
   lastMove: number = new Date().getMinutes()
-  filterData: Filter = {
-                      startDate: null,
-                      endDate: null,
-                      login: null,
-                      sum: null,
-                      payerPersonalAcc: null,
-                      payerCorrespAcc: null,
-                      payeePersonalAcc: null,
-                      payeeCorrespAcc: null,
-                      purpose: null,
-                      payerName: null,
-                      payeeName: null,
-                      currency: null,
-                      status: null,
-  }
+  filterData = {} as Filter
+  //                     startDate: null,
+  //                     endDate: null,
+  //                     login: null,
+  //                     sum: null,
+  //                     payerPersonalAcc: null,
+  //                     payerCorrespAcc: null,
+  //                     payeePersonalAcc: null,
+  //                     payeeCorrespAcc: null,
+  //                     purpose: null,
+  //                     payerName: null,
+  //                     payeeName: null,
+  //                     currency: null,
+  //                     status: null,
+  // }
   isFiltering = false
   isLoading = true
   balance: Balance = {
@@ -134,7 +135,6 @@ export class CorrMainComponent implements OnInit, AfterViewInit {
     () =>{
     });
   }
-
 
   initSorted() {
     this.sortList.push("edDate desc")
@@ -348,8 +348,12 @@ export class CorrMainComponent implements OnInit, AfterViewInit {
   }
 
   openReportDialog() {
+    const viewReportsDialog = new MatDialogConfig();
+    viewReportsDialog.width = '80%';
+    viewReportsDialog.height = '80%';
+    this.dialog.open(ReportComponent, viewReportsDialog)
 
-    window.location.href = "http://172.16.0.146:1216/download"
+//    window.location.href = "http://172.16.0.146:1216/download"
 
   }
 

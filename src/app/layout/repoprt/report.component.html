@@ -1,0 +1,41 @@
+<div class="container-flex">
+
+  <div>{{reportTypeName}}</div>
+
+  <mat-grid-list cols="15" rowHeight="50">
+    <mat-grid-tile [colspan]="5" >
+      <mat-form-field style=" width: 80%;padding-top: 1em">
+        <input matInput (keyup)="applyFilter($event)" placeholder="Search">
+      </mat-form-field>
+    </mat-grid-tile>
+    <mat-grid-tile [colspan]="10"></mat-grid-tile>
+  </mat-grid-list>
+
+
+<div class="loading-shade" *ngIf="dataSource.data.length < 0">
+  <mat-spinner ></mat-spinner>
+</div>
+
+<div class="table-container border-bottom border-top" >
+  <table mat-table matSort [dataSource]="dataSource" class="example-table w-100" matSortStart="desc"
+         matSortActive="created" matSortDisableClear (matSortChange)="sortChanged($event)">
+
+    <ng-container matColumnDef="report_id">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header disableClear> Report id</th>
+      <td mat-cell *matCellDef="let element;" > {{element.report_id}}  </td>
+    </ng-container>
+
+    <ng-container matColumnDef="report_name">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header > Report name</th>
+      <td mat-cell *matCellDef="let element;" >{{element.report_name}}</td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns; let i = index " (dblclick)="dblClickTrnRow(row)"></tr>
+  </table>
+</div>
+</div>
+
+
+
+
