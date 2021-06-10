@@ -22,10 +22,11 @@ import {CorrMainComponent} from './layout/corr_layouts/corr-main/corr-main.compo
 import {CtrlMainComponent} from './layout/ctrl_layouts/ctrl-main/ctrl-main.component';
 import {SpacePipe} from './utils/space.pipe';
 import {FilterLayoutComponent} from './layout/filter-layout/filter-layout.component';
-import {PdfViewerModule} from "ng2-pdf-viewer";
-import {ReportComponent} from './layout/repoprt/report.component';
+import {ReportComponent} from './layout/report/report.component';
 import {MaterialModule} from "./material-module";
 import {MatChipsModule} from "@angular/material/chips";
+import {ReportParamsViewComponent} from './layout/report-params-view/report-params-view.component';
+import {PdfViewComponent} from './layout/pdf-viewer/pdf-view.component';
 
 @NgModule({
   declarations: [
@@ -43,6 +44,9 @@ import {MatChipsModule} from "@angular/material/chips";
     SpacePipe,
     FilterLayoutComponent,
     ReportComponent,
+    ReportParamsViewComponent,
+    PdfViewComponent,
+
   ],
   imports: [
     BrowserModule,
@@ -53,11 +57,10 @@ import {MatChipsModule} from "@angular/material/chips";
     HttpClientModule,
     NgxCurrencyModule,
     FormsModule,
-    PdfViewerModule,
     MatChipsModule,
   ],
   providers: [authInterceptorProviders, authErrorInterceptorProviders, MatNativeDateModule],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
 export class AppModule {
 }

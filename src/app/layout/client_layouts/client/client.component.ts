@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
 import {TokenStorageService} from "../../../service/token-storage.service";
 import {NotificationService} from "../../../service/notification.service";
 import {Router} from "@angular/router";
@@ -12,15 +12,23 @@ import {SelectionModel} from "@angular/cdk/collections";
 import {ViewTrnComponent} from "../view-trn/view-trn.component";
 import {CreateTrnComponent} from "../create-trn/create-trn.component";
 import {AuthService} from "../../../service/auth.service";
-import {Sort} from "@angular/material/sort";
+import {MatSort, Sort} from "@angular/material/sort";
 import {compare} from "../../../utils/utils";
+import {Balance} from "../../../model/balance";
+import {MatPaginator} from "@angular/material/paginator";
+import {merge} from "rxjs";
+import {map, startWith, switchMap} from "rxjs/operators";
+import {Filter} from "../../../model/filter";
+import {BalanceService} from "../../../service/balance.service";
+import {FilterLayoutComponent} from "../../filter-layout/filter-layout.component";
+import {ReportComponent} from "../../report/report.component";
 
 @Component({
   selector: 'app-client',
   templateUrl: './client.component.html',
   styleUrls: ['./client.component.scss']
 })
-export class ClientComponent implements OnInit {
+export class ClientComponent implements OnInit, AfterViewInit{
 
   currentBank: Bank
   currentUser: User
@@ -34,8 +42,26 @@ export class ClientComponent implements OnInit {
   dataSource: MatTableDataSource<Trn> = new MatTableDataSource()
   selection = new SelectionModel<Trn>(true, []);
   lastMove: number = new Date().getMinutes()
-  isChecked = true
-  filterData = {}
+
+  filterData = {} as Filter
+  isFiltering = false
+  isLoading = true
+  balance: Balance = {
+    real_balance: 0,
+    planned_balance: 0,
+    payment_position: 0
+  }
+
+  pageIndex = 0
+  pageSize = 50
+  resultsLength: any = 0;
+
+  sortList: string[] = []
+
+  @ViewChild(MatPaginator, {read : MatPaginator , static: false}) paginator?: MatPaginator;
+  @ViewChild(MatSort,  {read : MatSort , static: false}) sort?: MatSort;
+  filters: string[] = []
+
 
   constructor(
     private authService: AuthService,
@@ -43,7 +69,8 @@ export class ClientComponent implements OnInit {
     private notificationService: NotificationService,
     private router: Router,
     private trnService: TrnService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private balanceServise: BalanceService
   ) {
 
     this.currentBank = this.tokenStorage.getBank()
@@ -51,25 +78,72 @@ export class ClientComponent implements OnInit {
     this.selection.changed.subscribe(() => {
       this.buttonVisible = this.selection.selected.length.valueOf() === 1 ? true : false
     })
-      this.loadTrans(new Date())
+//      this.loadTrans(new Date())
 
-    this.filterData = {
-      date: null,
 
-    }
+    this.initFilter()
+    this.initSorted()
+    this.initBalance()
+
   }
 
-  loadTrans(date: Date) {
-    this.trnService.getTranByDate(date).subscribe(data => {
-      this.currentTransactions = data
-      this.dataSource = new MatTableDataSource(this.currentTransactions);
-      this.dataSource.data = this.dataSource.data.sort((t1, t2) => {
-        return (t1.edNo - t2.edNo) >= 0 ? 1 : -1
-      })
+  ngAfterViewInit() {
+    // @ts-ignore
+    this.sort?.sortChange.subscribe(() => this.paginator.pageIndex = 0);
 
+    // @ts-ignore
+    merge<MatSort,MatPaginator>(this.sort.sortChange, this.paginator.page)
+      .pipe(
+        startWith({}),
+        switchMap(() => {
+          this.isLoading = true
+          if(this.sort?.active != 'created')
+            this.sortList.push(`${this.sort?.active} ${this.sort?.direction}`)
+          // @ts-ignore
+          return this.trnService.getFilteringTrn(this.filterData as Filter, this.paginator.pageIndex, this.paginator.pageSize, this.sortList.toString())
+        }),
+        map(data => {
+          this.isLoading = false;
+          this.sortList.splice(0, this.sortList.length)
+          if (data === null) return []
+          return data;
+        })
+      ).subscribe(data => {
+        this.dataSource.data = data.trnList
+        this.resultsLength = data.loadLength
+        // @ts-ignore
+        this.pageIndex = this.paginator?.pageIndex
+        // @ts-ignore
+        this.pageSize = this.paginator?.pageSize
+      }, error => {
+        this.notificationService.showSnackBar(error.message || error.statusText);
+      },
+      () =>{
+      });
+  }
+
+  initSorted() {
+    this.sortList.push("edDate desc")
+  }
+
+  initBalance() {
+    const balDate = {
+      data: null,
+      curr: "RUR",
+      acc: this.filterData.payerCorrespAcc
+    }
+    this.balanceServise.getBalance(balDate).subscribe(res => {
+      this.balance.real_balance = +res.real_balance.toString().replace(",", ".")
+      this.balance.planned_balance = +res.planned_balance.toString().replace(",", ".")
+      this.balance.payment_position = +res.payment_position.toString().replace(",", ".")
     }, error => {
-      this.notificationService.showSnackBar(error.message || error.statusText);
+      this.notificationService.showSnackBar("Balance loading error")
     })
+  }
+
+  initFilter() {
+    this.filterData.payerCorrespAcc = this.currentBank.corrAcc
+    this.filterData.login = this.currentUser.login
   }
 
   ngOnInit(): void {
@@ -114,11 +188,12 @@ export class ClientComponent implements OnInit {
     viewDialogTransaction.data = {
       trn: currentTrn
     };
-    this.dialog.open(ViewTrnComponent, viewDialogTransaction).afterClosed()
-      .subscribe(result => {
-        if (result != undefined && result.res != 0)
-          this.loadTrans(new Date())
-      });
+    this.dialog.open(ViewTrnComponent, viewDialogTransaction)
+      // .afterClosed()
+      // .subscribe(result => {
+      //   if (result != undefined && result.res != 0)
+      //     this.loadTrans(new Date())
+      // });
   }
 
   isAllSelected() {
@@ -192,49 +267,6 @@ export class ClientComponent implements OnInit {
       this.selection.select(this.currentTransactions[i])
   }
 
-
-  sortChanged(sort: Sort) {
-    if (!sort.active || sort.direction === '') {
-      return;
-    }
-
-    this.dataSource.data = this.dataSource.data.sort((a, b) => {
-      const isAsc = sort.direction === 'asc';
-      switch (sort.active) {
-
-        case 'status' :
-          return compare(a.status, b.status, isAsc);
-        case 'position' :
-          return compare(a.position, b.position, isAsc);
-        case 'edNo' :
-          return compare(a.edNo, b.edNo, isAsc);
-        case 'edDate' :
-          return compare(a.edDate.getDate(), b.edDate.getDate(), isAsc);
-        case 'payeePersonalAcc' :
-          return compare(a.payeePersonalAcc, b.payeePersonalAcc, isAsc);
-        case 'payerPersonalAcc' :
-          return compare(a.payerPersonalAcc, b.payerPersonalAcc, isAsc);
-        case 'sum' :
-          return compare(a.sum, b.sum, isAsc);
-        case 'currency' :
-          return compare(a.currency, b.currency, isAsc);
-        case 'payeeINN' :
-          return compare(a.payeeINN, b.payeeINN, isAsc);
-        case 'payeeName' :
-          return compare(a.payeeName, b.payeeName, isAsc);
-        case 'payerINN' :
-          return compare(a.payerINN, b.payerINN, isAsc);
-        case 'payerName' :
-          return compare(a.payerName, b.payerName, isAsc);
-        case 'purpose' :
-          return compare(a.purpose, b.purpose, isAsc);
-        default:
-          return 0;
-      }
-    });
-
-  }
-
   move() {
     let nowMonent = new Date().getMinutes()
     if((nowMonent - this.lastMove) > 5) {
@@ -244,7 +276,86 @@ export class ClientComponent implements OnInit {
   }
 
   setFilter() {
+    const viewDialogFilter = new MatDialogConfig();
+    viewDialogFilter.width = '60%';
+    viewDialogFilter.height = '50%';
+    viewDialogFilter.data = {filter: this.filterData};
+    this.dialog.open(FilterLayoutComponent, viewDialogFilter).afterClosed().subscribe(res => {
+      if (res === 1) {
+        this.isFiltering = true
+        this.sort?.sortChange.next()
+        this.filters.splice(0,this.filters.length)
+        Object.keys(this.filterData).forEach(key => {
+          let value = ""
+          // @ts-ignore
+          if(this.filterData[key] != null && key != "payerCorrespAcc" && key != "login") {
+            if (key === 'startDate' || key === 'endDate') {
+              // @ts-ignore
+              value = this.filterData[key].toLocaleDateString()
+            } else { // @ts-ignore
+              value = this.filterData[key]
+            }
+            this.filters.push(`${key} = ${value}`)
+          }
+        })
+      }
+    })
+  }
 
+  openReportDialog() {
+    const viewReportsDialog = new MatDialogConfig();
+    viewReportsDialog.width = '80%';
+    viewReportsDialog.height = '80%';
+    this.dialog.open(ReportComponent, viewReportsDialog)
+  }
+
+  accChanged(event: any) {
+    let currentAcc = (event.target as HTMLSelectElement).value;
+    this.filterData.payerCorrespAcc = currentAcc
+    this.sort?.sortChange.next()
+    this.initBalance()
+
+  }
+
+  resetFilter() {
+    this.filters.splice(0,this.filters.length)
+    this.filterData.startDate = null
+    this.filterData.endDate = null
+    this.filterData.sum = null
+    this.filterData.payerPersonalAcc = null
+    this.filterData.payeePersonalAcc = null
+    this.filterData.payeeCorrespAcc = null
+    this.filterData.purpose = null
+    this.filterData.payerName = null
+    this.filterData.payeeName = null
+    this.filterData.currency = null
+    this.filterData.status = null
+
+    this.initSorted()
+
+    this.sort?.sortChange.next()
+  }
+
+  remove(filter: string) {
+    let filterKey = filter.substr(0, filter.indexOf("=") - 1)
+
+    if(filterKey === 'startDate' || filterKey === 'endDate'){
+      this.filters.splice(this.filters.indexOf(this.filters.find(s => s.indexOf("startDate")) as string), 1);
+      this.filters.splice(this.filters.indexOf(this.filters.find(s => s.indexOf("endDate")) as string), 1);
+      // @ts-ignore
+      this.filterData['endDate'] = null
+      this.filterData['startDate'] = null
+     this.sort?.sortChange.next()
+      return
+    }
+
+    const index = this.filters.indexOf(filter);
+    if (index >= 0) {
+      this.filters.splice(index, 1);
+      // @ts-ignore
+      this.filterData[filterKey] = null
+     this.sort?.sortChange.next()
+   }
   }
 
 }

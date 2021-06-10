@@ -8,7 +8,9 @@
         <input matInput (keyup)="applyFilter($event)" placeholder="Search">
       </mat-form-field>
     </mat-grid-tile>
-    <mat-grid-tile [colspan]="10"></mat-grid-tile>
+    <mat-grid-tile [colspan]="7"></mat-grid-tile>
+    <mat-grid-tile [colspan]="3"><small>Double click for order report</small></mat-grid-tile>
+
   </mat-grid-list>
 
 
@@ -31,9 +33,10 @@
     </ng-container>
 
     <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
-    <tr mat-row *matRowDef="let row; columns: displayedColumns; let i = index " (dblclick)="dblClickTrnRow(row)"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns; let i = index " (dblclick)="orderReport(row)"></tr>
   </table>
 </div>
+
 </div>
 
 

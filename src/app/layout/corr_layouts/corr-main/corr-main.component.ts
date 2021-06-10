@@ -14,12 +14,18 @@ import {Filter} from "../../../model/filter";
 import {BalanceService} from "../../../service/balance.service";
 import {Balance} from "../../../model/balance";
 import {FilterLayoutComponent} from "../../filter-layout/filter-layout.component";
-import {merge} from "rxjs";
+import {merge, Subject} from "rxjs";
 import {map, startWith, switchMap} from "rxjs/operators";
 import {MatTableDataSource} from "@angular/material/table";
 import {MatSort, MatSortable, Sort} from "@angular/material/sort";
 import {MatPaginator, PageEvent} from "@angular/material/paginator";
-import {ReportComponent} from "../../repoprt/report.component";
+import {ReportComponent} from "../../report/report.component";
+import {ReportService} from "../../../service/report.service";
+
+enum Regim{
+  Payer,
+  Payee
+}
 
 @Component({
   selector: 'app-corr-main',
@@ -27,6 +33,8 @@ import {ReportComponent} from "../../repoprt/report.component";
   styleUrls: ['./corr-main.component.scss']
 })
 export class CorrMainComponent implements OnInit, AfterViewInit {
+
+
   currentBank: Bank
   currentUser: User
   buttonVisible: boolean = false
@@ -38,20 +46,7 @@ export class CorrMainComponent implements OnInit, AfterViewInit {
   selection = new SelectionModel<Trn>(true, []);
   lastMove: number = new Date().getMinutes()
   filterData = {} as Filter
-  //                     startDate: null,
-  //                     endDate: null,
-  //                     login: null,
-  //                     sum: null,
-  //                     payerPersonalAcc: null,
-  //                     payerCorrespAcc: null,
-  //                     payeePersonalAcc: null,
-  //                     payeeCorrespAcc: null,
-  //                     purpose: null,
-  //                     payerName: null,
-  //                     payeeName: null,
-  //                     currency: null,
-  //                     status: null,
-  // }
+
   isFiltering = false
   isLoading = true
   balance: Balance = {
@@ -74,6 +69,10 @@ export class CorrMainComponent implements OnInit, AfterViewInit {
   @ViewChild(MatSort,  {read : MatSort , static: false}) sort?: MatSort;
   filters: string[] = []
 
+  clientRegim: Regim = Regim.Payer
+
+  regim:Subject<Regim> = new Subject()
+
 
   constructor(
     private authService: AuthService,
@@ -82,7 +81,8 @@ export class CorrMainComponent implements OnInit, AfterViewInit {
     private router: Router,
     private trnService: TrnService,
     private dialog: MatDialog,
-    private balanceServise: BalanceService
+    private balanceServise: BalanceService,
+    readonly reportsService: ReportService,
   ) {
     this.currentBank = this.tokenStorage.getBank()
     this.currentUser = this.tokenStorage.getUser()
@@ -104,15 +104,14 @@ export class CorrMainComponent implements OnInit, AfterViewInit {
     this.sort?.sortChange.subscribe(() => this.paginator.pageIndex = 0);
 
     // @ts-ignore
-    merge<MatSort,MatPaginator>(this.sort.sortChange, this.paginator.page)
+    merge<MatSort,MatPaginator>(this.sort.sortChange, this.paginator.page,this.regim)
       .pipe(
         startWith({}),
         switchMap(() => {
+          this.initFilter()
           this.isLoading = true
           if(this.sort?.active != 'created')
             this.sortList.push(`${this.sort?.active} ${this.sort?.direction}`)
-          console.log('------------------------------')
-          console.log(this.sortList)
           // @ts-ignore
           return this.trnService.getFilteringTrn(this.filterData as Filter, this.paginator.pageIndex, this.paginator.pageSize, this.sortList.toString())
         }),
@@ -156,7 +155,21 @@ export class CorrMainComponent implements OnInit, AfterViewInit {
   }
 
   initFilter() {
-    this.filterData.payerCorrespAcc = this.currentBank.corrAcc
+    if (this.clientRegim === 1) {
+      this.filterData.payeeCorrespAcc = this.currentBank.corrAcc
+      if(!this.isFiltering)
+        this.filterData.payerCorrespAcc = null
+      this.filterData.status = 4
+    } else {
+      this.filterData.payerCorrespAcc = this.currentBank.corrAcc
+      if(!this.isFiltering) {
+        this.filterData.payeeCorrespAcc = null
+        this.filterData.status = null
+      }
+    }
+
+
+   // this.filterData.payerCorrespAcc = this.currentBank.corrAcc
   }
 
   ngOnInit(): void {
@@ -222,51 +235,6 @@ export class CorrMainComponent implements OnInit, AfterViewInit {
     //   this.loadTrans()
   }
 
-
-  // sortChanged(sort: Sort) {
-  //
-  //   if (!sort.active || sort.direction === '') {
-  //     return;
-  //   }
-  //
-  //   // this.dataSource.data = this.dataSource.data.sort((a, b) => {
-  //   //   const isAsc = sort.direction === 'asc';
-  //   //   switch (sort.active) {
-  //   //
-  //   //     case 'status'   :
-  //   //       return compare(a.status, b.status, isAsc);
-  //   //     case 'position' :
-  //   //       return compare(a.position, b.position, isAsc);
-  //   //     case 'edNo'     :
-  //   //       return compare(a.edNo, b.edNo, isAsc);
-  //   //     case 'edDate'   :
-  //   //       return compare(a.edDate.toTimeString(), b.edDate.toTimeString(), isAsc);
-  //   //     case 'payeePersonalAcc' :
-  //   //       return compare(a.payeePersonalAcc, b.payeePersonalAcc, isAsc);
-  //   //     case 'payerPersonalAcc' :
-  //   //       return compare(a.payerPersonalAcc, b.payerPersonalAcc, isAsc);
-  //   //     case 'sum' :
-  //   //       return compare(a.sum, b.sum, isAsc);
-  //   //     case 'currency' :
-  //   //       return compare(a.currency, b.currency, isAsc);
-  //   //     case 'payeeINN' :
-  //   //       return compare(a.payeeINN, b.payeeINN, isAsc);
-  //   //     case 'payeeName' :
-  //   //       return compare(a.payeeName, b.payeeName, isAsc);
-  //   //     case 'payerINN' :
-  //   //       return compare(a.payerINN, b.payerINN, isAsc);
-  //   //     case 'payerName' :
-  //   //       return compare(a.payerName, b.payerName, isAsc);
-  //   //     case 'purpose' :
-  //   //       return compare(a.purpose, b.purpose, isAsc);
-  //   //     default:
-  //   //       return 0;
-  //   //   }
-  //   // });
-  //
-  // }
-  //
-
   move() {
     let nowMonent = new Date().getMinutes()
     if ((nowMonent - this.lastMove) > 5) {
@@ -282,15 +250,19 @@ export class CorrMainComponent implements OnInit, AfterViewInit {
     viewDialogFilter.data = {filter: this.filterData};
     this.dialog.open(FilterLayoutComponent, viewDialogFilter).afterClosed().subscribe(res => {
       if (res === 1) {
+        console.log('---------------------------------')
+        console.log(this.filterData)
         this.isFiltering = true
         this.sort?.sortChange.next()
         this.filters.splice(0,this.filters.length)
         Object.keys(this.filterData).forEach(key => {
           let value = ""
           // @ts-ignore
-          if(this.filterData[key] != null && key != "payerCorrespAcc") {
+          if(this.filterData[key] != null &&
+            ((key != "payerCorrespAcc" && this.clientRegim === Regim.Payer)
+            || (key != "payeeCorrespAcc" && key != "status" && this.clientRegim === Regim.Payee)
+            )) {
             if (key === 'startDate' || key === 'endDate') {
-              // @ts-ignore
               // @ts-ignore
               value = this.filterData[key].toLocaleDateString()
             } else { // @ts-ignore
@@ -334,17 +306,9 @@ export class CorrMainComponent implements OnInit, AfterViewInit {
   }
 
   onSelectTab(tabNum: number) {
-    console.log(tabNum)
-    if (tabNum === 1) {
-      this.filterData.payeeCorrespAcc = this.currentBank.corrAcc
-      this.filterData.payerCorrespAcc = null
-      this.filterData.status = 4
-    } else {
-      this.filterData.payerCorrespAcc = this.currentBank.corrAcc
-      this.filterData.payeeCorrespAcc = null
-      this.filterData.status = null
-    }
-    this.sort?.sortChange.next()
+    this.resetFilter()
+    this.clientRegim = tabNum === 1 ? Regim.Payee : Regim.Payer
+    this.regim.next(this.clientRegim)
   }
 
   openReportDialog() {
@@ -352,12 +316,10 @@ export class CorrMainComponent implements OnInit, AfterViewInit {
     viewReportsDialog.width = '80%';
     viewReportsDialog.height = '80%';
     this.dialog.open(ReportComponent, viewReportsDialog)
-
-//    window.location.href = "http://172.16.0.146:1216/download"
-
   }
 
   resetFilter() {
+    this.isFiltering = false
     this.filters.splice(0,this.filters.length)
     this.filterData.startDate = null
     this.filterData.endDate = null

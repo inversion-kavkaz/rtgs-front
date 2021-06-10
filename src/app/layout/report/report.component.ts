@@ -1,8 +1,11 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {ReportService} from "../../service/report.service";
 import {MatTableDataSource} from "@angular/material/table";
 import {Sort} from "@angular/material/sort";
 import {compare} from "../../utils/utils";
+import {MatDialog, MatDialogConfig} from "@angular/material/dialog";
+import {ViewTrnComponent} from "../client_layouts/view-trn/view-trn.component";
+import {ReportParamsViewComponent} from "../report-params-view/report-params-view.component";
 
 @Component({
   selector: 'app-repoprt',
@@ -17,7 +20,10 @@ export class ReportComponent implements OnInit {
   displayedColumns: string[] = ['report_id', 'report_name']
 
 
-  constructor(readonly reportsService:ReportService) {
+  constructor(
+    readonly reportsService: ReportService,
+    readonly dialog: MatDialog,
+  ) {
     this.loadReports()
   }
 
@@ -48,8 +54,15 @@ export class ReportComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  dblClickTrnRow(row: any) {
-    console.log(row)
+  orderReport(row: any) {
+
+    const viewReportParamsDialog = new MatDialogConfig();
+    viewReportParamsDialog.width = '50%';
+    viewReportParamsDialog.height = '50%';
+    viewReportParamsDialog.data = {
+      report: row
+    };
+    this.dialog.open(ReportParamsViewComponent, viewReportParamsDialog)
   }
 
   applyFilter(event: Event) {

@@ -1,0 +1,21 @@
+<div class="loading-shade"
+     *ngIf="isReportFormed">
+  <mat-spinner *ngIf="isReportFormed"></mat-spinner>
+</div>
+
+<div style="text-align: center">
+  <h3>Report parameters</h3>
+  <mat-grid-list [cols]="1" rowHeight="10:1" *ngFor="let prop of reportParams">
+    <mat-grid-tile >
+      <mat-form-field class="w-100">
+        <mat-label>{{prop.cparamdescr}}</mat-label>
+        <input matInput value="{{prop.cparamdefault}}" class="rep_param">
+      </mat-form-field>
+    </mat-grid-tile>
+  </mat-grid-list>
+</div>
+<footer style="display: flex;justify-content: center;">
+  <button  color="primary"  mat-button disableRipple (click)="submit()"> Order report </button>
+  <button  mat-button mat-dialog-close disableRipple> Cancel </button>
+</footer>
+
