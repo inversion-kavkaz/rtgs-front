@@ -16,12 +16,14 @@ import {MatSort, Sort} from "@angular/material/sort";
 import {compare} from "../../../utils/utils";
 import {Balance} from "../../../model/balance";
 import {MatPaginator} from "@angular/material/paginator";
-import {merge} from "rxjs";
+import {interval, merge, Subject} from "rxjs";
 import {map, startWith, switchMap} from "rxjs/operators";
 import {Filter} from "../../../model/filter";
 import {BalanceService} from "../../../service/balance.service";
 import {FilterLayoutComponent} from "../../filter-layout/filter-layout.component";
 import {ReportComponent} from "../../report/report.component";
+import {ReportService} from "../../../service/report.service";
+import {ReportOrder} from "../../../model/report-order";
 
 @Component({
   selector: 'app-client',
@@ -32,7 +34,6 @@ export class ClientComponent implements OnInit, AfterViewInit{
 
   currentBank: Bank
   currentUser: User
-  currentTransactions: Trn[] = []
   deleteList: number[] = []
   buttonVisible: boolean = false
 
@@ -58,6 +59,9 @@ export class ClientComponent implements OnInit, AfterViewInit{
 
   sortList: string[] = []
 
+  orderReportList: ReportOrder[] = []
+  notShowReports = 0
+
   @ViewChild(MatPaginator, {read : MatPaginator , static: false}) paginator?: MatPaginator;
   @ViewChild(MatSort,  {read : MatSort , static: false}) sort?: MatSort;
   filters: string[] = []
@@ -70,7 +74,8 @@ export class ClientComponent implements OnInit, AfterViewInit{
     private router: Router,
     private trnService: TrnService,
     private dialog: MatDialog,
-    private balanceServise: BalanceService
+    private balanceServiсe: BalanceService,
+    readonly reportServiсe: ReportService
   ) {
 
     this.currentBank = this.tokenStorage.getBank()
@@ -78,8 +83,15 @@ export class ClientComponent implements OnInit, AfterViewInit{
     this.selection.changed.subscribe(() => {
       this.buttonVisible = this.selection.selected.length.valueOf() === 1 ? true : false
     })
-//      this.loadTrans(new Date())
 
+    reportServiсe.orderForArchive.subscribe(res  => {
+      const order = res as ReportOrder
+      if(order.statusCode != -1) {
+        console.log(order)
+        this.orderReportList = this.reportServiсe.orderedReportList
+        this.notShowReports += 1
+      }
+    })
 
     this.initFilter()
     this.initSorted()
@@ -132,7 +144,7 @@ export class ClientComponent implements OnInit, AfterViewInit{
       curr: "RUR",
       acc: this.filterData.payerCorrespAcc
     }
-    this.balanceServise.getBalance(balDate).subscribe(res => {
+    this.balanceServiсe.getBalance(balDate).subscribe(res => {
       this.balance.real_balance = +res.real_balance.toString().replace(",", ".")
       this.balance.planned_balance = +res.planned_balance.toString().replace(",", ".")
       this.balance.payment_position = +res.payment_position.toString().replace(",", ".")
@@ -184,7 +196,7 @@ export class ClientComponent implements OnInit, AfterViewInit{
     const viewDialogTransaction = new MatDialogConfig();
     viewDialogTransaction.width = '80%';
     viewDialogTransaction.height = '80%';
-    const currentTrn = this.currentTransactions.find(u => u.itrnnum == row.itrnnum)
+    const currentTrn: Trn = this.dataSource.data.find(u => u.itrnnum == row.itrnnum) as Trn
     viewDialogTransaction.data = {
       trn: currentTrn
     };
@@ -261,10 +273,10 @@ export class ClientComponent implements OnInit, AfterViewInit{
   }
 
   clickTrnRow(i: any) {
-    if (this.selection.isSelected(this.currentTransactions[i]))
-      this.selection.deselect(this.currentTransactions[i])
+    if (this.selection.isSelected(this.dataSource.data[i]))
+      this.selection.deselect(this.dataSource.data[i])
     else
-      this.selection.select(this.currentTransactions[i])
+      this.selection.select(this.dataSource.data[i])
   }
 
   move() {
@@ -358,6 +370,9 @@ export class ClientComponent implements OnInit, AfterViewInit{
    }
   }
 
+  openReportArchive() {
+    this.notShowReports = 0
+  }
 }
 
 

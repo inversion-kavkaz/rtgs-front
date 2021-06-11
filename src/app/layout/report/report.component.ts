@@ -3,7 +3,7 @@ import {ReportService} from "../../service/report.service";
 import {MatTableDataSource} from "@angular/material/table";
 import {Sort} from "@angular/material/sort";
 import {compare} from "../../utils/utils";
-import {MatDialog, MatDialogConfig} from "@angular/material/dialog";
+import {MatDialog, MatDialogConfig, MatDialogRef} from "@angular/material/dialog";
 import {ViewTrnComponent} from "../client_layouts/view-trn/view-trn.component";
 import {ReportParamsViewComponent} from "../report-params-view/report-params-view.component";
 
@@ -16,13 +16,12 @@ export class ReportComponent implements OnInit {
 
   dataSource: MatTableDataSource<any> = new MatTableDataSource()
   reportTypeName: string = ""
-
   displayedColumns: string[] = ['report_id', 'report_name']
-
 
   constructor(
     readonly reportsService: ReportService,
     readonly dialog: MatDialog,
+    readonly dialogRef: MatDialogRef<ReportParamsViewComponent>,
   ) {
     this.loadReports()
   }
@@ -62,7 +61,10 @@ export class ReportComponent implements OnInit {
     viewReportParamsDialog.data = {
       report: row
     };
-    this.dialog.open(ReportParamsViewComponent, viewReportParamsDialog)
+    this.dialog.open(ReportParamsViewComponent, viewReportParamsDialog).afterClosed().subscribe( res => {
+      if(res === 0)
+        this.closeDialog(1)
+    })
   }
 
   applyFilter(event: Event) {
@@ -86,7 +88,10 @@ export class ReportComponent implements OnInit {
           return 0;
       }
     });
+  }
 
+  closeDialog(number: number) {
+    this.dialogRef.close(number)
   }
 
 }

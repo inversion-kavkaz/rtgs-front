@@ -26,7 +26,6 @@ import {ReportComponent} from './layout/report/report.component';
 import {MaterialModule} from "./material-module";
 import {MatChipsModule} from "@angular/material/chips";
 import {ReportParamsViewComponent} from './layout/report-params-view/report-params-view.component';
-import {PdfViewComponent} from './layout/pdf-viewer/pdf-view.component';
 
 @NgModule({
   declarations: [
@@ -45,7 +44,6 @@ import {PdfViewComponent} from './layout/pdf-viewer/pdf-view.component';
     FilterLayoutComponent,
     ReportComponent,
     ReportParamsViewComponent,
-    PdfViewComponent,
 
   ],
   imports: [

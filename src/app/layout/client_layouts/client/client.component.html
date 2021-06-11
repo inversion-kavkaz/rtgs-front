@@ -43,6 +43,10 @@
       <button mat-stroked-button style="margin-left: 0.5em" (click)="deleteTransaction()">Delete <mat-icon color="accent">delete</mat-icon></button>
       <button mat-stroked-button style="margin-left: 0.5em" (click)="setFilter()">Filter <mat-icon color="accent">filter_list</mat-icon></button>
       <button mat-stroked-button style="margin-left: 0.5em" (click)="openReportDialog()">Reports<mat-icon color="accent">print </mat-icon></button>
+      <button mat-stroked-button *ngIf="orderReportList.length > 0"  style="margin-left: 0.5em" (click)="openReportArchive()">Archive
+        <mat-icon style="color: steelblue">archive</mat-icon>
+        <small *ngIf="notShowReports > 0" style="color: darkred">{{notShowReports}}</small>
+      </button>
 
     </mat-grid-tile>
 
