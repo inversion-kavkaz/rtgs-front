@@ -87,7 +87,6 @@ export class ClientComponent implements OnInit, AfterViewInit{
     reportServiсe.orderForArchive.subscribe(res  => {
       const order = res as ReportOrder
       if(order.statusCode != -1) {
-        console.log(order)
         this.orderReportList = this.reportServiсe.orderedReportList
         this.notShowReports += 1
       }

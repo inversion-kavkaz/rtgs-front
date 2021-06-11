@@ -98,7 +98,6 @@ export class ReportParamsViewComponent implements OnInit {
   }
 
   backgroundReport() {
-    console.log(this.currentReportUID)
     this.closeDialog(0)
   }
 }

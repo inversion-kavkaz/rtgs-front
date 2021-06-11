@@ -39,7 +39,7 @@ export class ReportService {
 
   setInitReportTypeId() {
     if (this.currentUser.roles[0] === 'ROLE_USER')
-      this.reportTypeId = 5440
+      this.reportTypeId = 99999999901
     if (this.currentUser.roles[0] === 'ROLE_CORR')
       this.reportTypeId = 610005
   }
@@ -131,7 +131,6 @@ export class ReportService {
               })
             }
           })
-        console.log(this.orderedReportList)
       })
   }
 
