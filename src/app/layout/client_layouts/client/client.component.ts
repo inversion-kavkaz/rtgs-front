@@ -61,6 +61,7 @@ export class ClientComponent implements OnInit, AfterViewInit{
 
   orderReportList: ReportOrder[] = []
   notShowReports = 0
+  isReportProcessed: boolean = false
 
   @ViewChild(MatPaginator, {read : MatPaginator , static: false}) paginator?: MatPaginator;
   @ViewChild(MatSort,  {read : MatSort , static: false}) sort?: MatSort;
@@ -89,9 +90,11 @@ export class ClientComponent implements OnInit, AfterViewInit{
       if(Object.keys(order).length < 1) {
         return
       }
+      this.isReportProcessed = true
       if(order.statusCode != -1) {
         this.orderReportList = this.reportServiсe.orderedReportList
         this.notShowReports += 1
+        this.isReportProcessed = false
       }
     })
 

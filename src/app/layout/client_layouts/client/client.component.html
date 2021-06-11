@@ -47,6 +47,7 @@
         <mat-icon style="color: steelblue">archive</mat-icon>
         <small *ngIf="notShowReports > 0" style="color: darkred">{{notShowReports}}</small>
       </button>
+      <mat-spinner *ngIf="isReportProcessed" style="opacity: 30%;margin-left: 1em" [diameter]="25"></mat-spinner>
 
     </mat-grid-tile>
 

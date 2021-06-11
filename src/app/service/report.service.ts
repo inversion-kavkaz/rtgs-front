@@ -125,7 +125,6 @@ export class ReportService {
               this.getReportStatus(rep.reqUId).subscribe(res => {
                 rep.statusCode = res.statuscode
                 rep.statusMessage = res.statusmessage
-                console.log(`next`)
                 this.lastOrderSubj.next(rep)
                 this.orderForArchive.next(rep)
               })
